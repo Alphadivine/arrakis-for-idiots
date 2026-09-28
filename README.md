@@ -31,7 +31,14 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **Copy for Discord**: one tap copies any gathering checklist as text, ready to paste.
 - **First-visit guide**: a short how-to opens the first time someone visits, and the **?** button brings it back.
 - **Personal lists**: each player keeps their own list (**Mine**) for their own gear. The rest of the group can see it under **Players** but only its owner can change it.
-- **Survive tab**: an 8-stage path for new players, from the crash site to the Deep Desert, plus tips on water, heat, sandworms, storms, spice, death and base safety.
+- **Guide tab**: everything about how the game works, in seven sections with one search box:
+  - **Getting started**: an 8-stage path from the crash site to the Deep Desert.
+  - **Staying alive**: water, heat, sandworms, storms, spice, death and base safety.
+  - **Guilds & factions**: creating and running a guild, base permissions for friends, Atreides vs Harkonnen, faction rewards and the Landsraad.
+  - **Skills & trainers**: the five skill trees, where each trainer is, respec, Intel and research, and four starter builds for a group.
+  - **Places & vendors**: regions, hubs, testing stations and shipwrecks, what vendors sell, travel costs, and where every looted part drops.
+  - **Enemies & combat**: shields vs blades and darts, armor, mobility, enemy groups, bosses, sandworms, and death and repair.
+  - **Quests & contracts**: the first journey chain, contract boards like Scrap Mettle, trials, trainer questlines, and a suggested path for new players.
 - **Phone-friendly**: works at phone width in light and dark. Add it to your home screen and it opens like an app with its own icon.
 
 ---
@@ -182,7 +189,7 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 3. **Plan:** tap **Add to my list** for your own gear, or **Add to group** for shared projects.
 4. **Split the work:** on the **Group** tab, tap **I'm on it** for what you're farming, type what's already **In storage**, and tick things off when they're all in.
 5. **Share spots:** on **Spots**, add good resource locations with a note and screenshots.
-6. **New to the game?** Start with the **Survive** tab, or tap **?** for the how-to.
+6. **New to the game?** Start with the **Guide** tab, or tap **?** for the how-to.
 
 **On a phone:** iPhone → Safari → Share → *Add to Home Screen*. Android → Chrome menu → *Add to Home screen*.
 
@@ -214,9 +221,10 @@ When the game patches, the recipe data gets rebuilt into a new `index.html`. Fir
 - Items marked **Check in game** came from a single source or from sources that disagree. Double-check those before a big crafting run.
 - **Not covered yet:** unique and named schematic variants, some optional vehicle parts, grenades, a few tool tiers, research unlock costs and landing pads.
 - **Water** amounts are in mL. Looted parts (Mechanical Parts, Gun Parts, EMF Generator, Industrial Pump, Complex Machinery and others) can't be crafted, so they're treated as raw materials.
-- **Private servers** can change sandworm, Coriolis storm and decay settings, so the Survive tab's advice on those may not match ours.
+- **Private servers** can change sandworm, Coriolis storm and decay settings, so the Guide's advice on those may not match ours.
 - Personal-list **ticks stay on each device**. Only the group checklist is shared.
 - **Pictures** load from awakening.wiki's servers. Four items have no wiki picture (Adept Dual Blades, Adept Missile Launcher, Cutteray Mk4, Personal Fabricator) and always use the drawn icon. If the wiki ever blocks outside sites, every item falls back to drawn icons automatically.
+- **Guide** info comes from the 1.5 patch notes, awakening.wiki and player guides. Cards marked **Check in game** came from a single source, or from sources that disagree. Some details are from before 1.5 and are labeled as such: guild size, Landsraad reset timing, and the names of the early quest steps.
 - **Base planner** figures come from the recipe data: power per structure, fuel from the generator notes (a Fuel Cell lasts 1 hour, a Spice-infused Fuel Cell 1 h 30 m) and windtrap output from its gather rate. Treat water per hour as an estimate. Wind turbine lubricant use isn't in the data.
 - **Optional vehicle modules** only exist in the data for some tiers. Where a newer one isn't listed, the builder offers the highest tier it has and says so.
 - **Screenshots** are stored in Firestore, about 100–300 KB each after shrinking. The free 1 GiB holds a few thousand.
