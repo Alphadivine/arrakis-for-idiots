@@ -6,13 +6,14 @@ Arrakis for Idiots is a single self-contained HTML file. No build step, no frame
 
 > **Live site:** [alphadivine.github.io/arrakis-for-idiots](https://alphadivine.github.io/arrakis-for-idiots/#craft)
 
-Recipe data is for **Update 1.5** (game version 1.5.3.3).
+Recipe data is for **Update 1.5** (game version 1.5.3.3; checked against hotfixes through 1.5.3.4).
 
 ---
 
 ## ✨ Features
 
-- **506 recipes**: materials and refining, weapons, tools, armor, stillsuits, consumables and ammo, base stations, refineries, power, water and building pieces, and **20 vehicles broken down into all 135 of their parts** (Sandbike, Buggy, Treadwheel, Scout / Assault / Carrier Ornithopter, Sandcrawler).
+- **899 recipes**: materials and refining, weapons, tools, armor, stillsuits, consumables and ammo, base stations, refineries, power, water and building pieces, and **20 vehicles broken down into all 209 of their parts and modules** (Sandbike, Buggy, Treadwheel, Scout / Assault / Carrier Ornithopter, Sandcrawler). Vehicle costs were re-checked against game data 1.5.3.3.
+- **Unique schematics**: 378 named and unique weapons, armor, stillsuits and tools, each tagged **Unique**. The **Unique** filter in Craft lists them all.
 - **Guide pictures**: location screenshots, enemies, trainers and quest art on most Guide cards, plus House crests and vendor portraits from awakening.wiki. House gear shows its in-game icon for 55 of 56 items (from awakening.wiki and the dune.gaming.tools item database; armor sets show their chest piece). **Tap any picture to see it bigger.**
 - **Search everything**: the magnifier at the top (or press **/**, or Ctrl+K) searches recipes, materials, Guide cards, spots and tasks at once. Enter opens the top result.
 - **Built for phones**: on a phone the tabs move to a bottom bar with icons and counts, filters fold into one **Filters** button, and the header stays on one line.
@@ -20,12 +21,13 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **Works offline**: recipes, the Guide, your lists and item pictures you've seen keep working without signal. Group changes made offline sync when you're back. The status shows "· offline" meanwhile.
 - **Light, dark or match your device**: the half-circle button at the top (on small phones, it's in the **?** menu).
 - **Which House should we pick?**: a side-by-side Atreides vs Harkonnen comparison at the top of the Houses guide. It covers where you pledge, the one gameplay schematic each side gets, what the other side can still get, the looks, and the switching rules.
-- **Item pictures**: real in-game icons for 558 of the 562 items, shown straight from [awakening.wiki](https://awakening.wiki). If one doesn't load, a drawn icon in the tier color takes its place. **View on wiki** on any item opens its full page.
+- **Item pictures**: real in-game icons for 950 of the 955 items, shown straight from [awakening.wiki](https://awakening.wiki) and the [dune.gaming.tools](https://dune.gaming.tools) item database. If one doesn't load, a drawn icon in the tier color takes its place. **View on wiki** on any item opens its full page.
 - **Search and filter** by category and tier: Salvaged → Copper → Iron → Steel → Aluminum → Duraluminum → Plastanium. Each tier has its own color.
 - **Full breakdown**: set how many you want and it rolls every sub-part down to raw materials, lists what to craft first and at which station, and shows everything the item is used in.
 - **Vehicle builder**: open any vehicle and switch its optional modules on (booster, storage, scanner, backseat, rocket launcher and so on). Totals and "Add to list" include them.
 - **Station pages**: "Made at" on every recipe opens its station: power use, everything it makes (grouped, with tiers), and its other sizes and upgrades. A **Stations** filter lists them all.
 - **Base planner**: pick how many generators, wind turbines, windtraps, cisterns, refineries, fabricators and chests you'll build. It adds up power made vs used, fuel burned per hour and day, water per hour, cistern and storage space, and the full build cost, which you can send to your list or the group's.
+- **Deep Desert run planner** (Craft → **Desert run**): set how many people are going, how long, and what for (Titanium, Stravidium, spice or salvage), and add your vehicles. It shows seats, total fuel and cargo space, and about how much of the target fits. It builds a packing list (water, healkits, respawn beacons, backup tools, fuel cells for one full refill, welding torch and wire, Cutterays and survey probes, or compactors for spice) with tick boxes and **Copy for Discord**. A countdown shows the weekly Coriolis storm in your local time, with a warning if the run would still be out when it hits. When you're back, the **Haul log** adds what you brought home to base storage (leader and officers) and keeps a record of past runs.
 - **Saved and Recent**: star recipes you check often; both show as quick filters in Craft.
 - **Gather tab**: 56 raw and looted materials with how and where to get them (Hagga Basin, Deep Desert, which tool), and what each one feeds into.
 - **Group list**: shared with everyone who joined. Anyone can add, change or remove items, and each shows who added it. Add from any recipe with **Add to group**.
@@ -33,6 +35,7 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **"I'm on it" claims**: claim a material so two people don't farm the same thing. Everyone sees who's gathering what.
 - **Base storage**: record what the group already has (raw materials or crafted parts like ingots). Every total shrinks to what's still missing, at every level, so 20 Copper Ingots in storage mean fewer ingots to refine and less ore to mine.
 - **Optional Google sign-in**: everyone can still join with just a name and the group code. Anyone who wants the app on more than one device taps their name → **Save my account with Google**. Their same player (name, tasks, history) is linked to Google, and My list, ticks, Saved/Recent, the base plan and vehicle module picks sync across devices. On a new device, **Sign in with Google** in the join box goes straight to their player without the code. If a Google account already has a player, the app offers to switch to it and hands over any tasks.
+- **Group backup**: once a week, when the leader opens the app, a copy of the whole group (list, ticks, claims, storage, tasks, crew names and spots) is saved in the database automatically, and the last 4 are kept. From their name → **Group backup** the leader can restore or download any of them, save one now, download a file (screenshots optional) or restore from a file.
 - **Leader and officers**: whoever enters the leader code becomes leader and can make trusted friends officers from the Crew list. Leader and officers hand out and delete tasks, change base storage, manage the crew, remove group list items, clear lists, untick everything, and edit or delete anyone's spots. Members can still add to the group list, change amounts, claim with "I'm on it", tick gathered materials, tick their own tasks, and add and edit their own spots. The database rules enforce all of this.
 - **Tasks**: hand out jobs to anyone on the crew, including friends who only play on their phone and never open the site (add them by name). Assign gathering (amount filled in from what's still needed), crafting or building, or any free-form job, with an optional note and due date. Each person gets their own list with a **Copy list** button. Tick tasks off when they report back; finishing a gathering task ticks the material on the group checklist under their name. "Assign to…" on every checklist row does it in one step. The **Who** list shows app users and phone-only friends separately. Typing a name that already belongs to an app user suggests that person, and if a phone-only friend later joins the app under the same name, their tasks move to their account automatically.
 - **What can we craft now?**: from base storage, shows what's ready to craft, what's ready once you make the parts, and what's one material short (and by how much).
@@ -211,6 +214,14 @@ service cloud.firestore {
         allow update, delete: if false;
       }
 
+      // weekly group backups: only the leader saves, reads and removes them
+      match /backups/{id} {
+        allow read, delete: if isLeader();
+        allow create: if isLeader() && request.resource.data.by == request.auth.uid &&
+          request.resource.data.json is string && request.resource.data.json.size() < 1000000;
+        allow update: if false;
+      }
+
       // each player's own list: the group can read it, only its owner can write it
       match /players/{uid} {
         allow read: if isMember();
@@ -288,6 +299,7 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 - **Remove someone:** delete their record under `boards/main/members` (and under `boards/main/players` to clear their list).
 - **New phone or cleared browser data** counts as a new player. They rejoin with the code.
 - **Another group:** set `GROUP_ID` to a new name, host that copy separately, and give it its own `boards/<name>/config/access` code.
+- **Back up the group:** it happens by itself once a week when the leader opens the app (the last 4 copies are kept in the database). Tap your name → **Group backup** to restore one, save one now, or download a file to keep somewhere else. Restoring overwrites entries with the same ID and removes nothing; restored ticks and spots show under the leader's name. Only the leader sees this.
 - **Free-tier headroom:** Spark allows 50,000 reads and 20,000 writes a day. A handful of friends won't come close.
 
 ---
@@ -301,7 +313,7 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 4. Replace `index.html` on GitHub.
 5. Do step 7b to make yourself leader. Until someone does, tasks, storage and the crew list are locked for everyone.
 
-**Upgrading?** Whenever the rules in step 5 change, paste them again and **Publish**, then replace `index.html`. The latest additions are sections for storage, claims, activity and spots, then tasks and the crew list. Nothing else changes and the existing group list carries over.
+**Upgrading?** Whenever the rules in step 5 change, paste them again and **Publish**, then replace `index.html`. The newest addition is the `backups` section for the weekly copies. Earlier additions were sections for storage, claims, activity and spots, then tasks and the crew list. Nothing else changes and the existing group list carries over.
 
 Replace `index.html` and `sw.js` in the repo (or drag the new folder onto Netlify). Pages redeploys in about a minute at the same link. Nothing in the database needs to change.
 
@@ -311,13 +323,14 @@ When the game patches, the recipe data gets rebuilt into a new `index.html`. Fir
 
 ## ⚠️ Notes & limitations
 
-- **Recipe data** comes mainly from [dune.gaming.tools](https://dune.gaming.tools) (game version 1.5.3.3) and [awakening.wiki](https://awakening.wiki), with the official 1.5 patch notes for changes. Vehicle costs come almost entirely from awakening.wiki.
+- **Recipe data** comes mainly from [dune.gaming.tools](https://dune.gaming.tools) (game version 1.5.3.3) and [awakening.wiki](https://awakening.wiki), with the official 1.5 patch notes for changes. Vehicle costs were corrected against dune.gaming.tools for 1.5.3.3 (92 parts had changed since the wiki's numbers).
 - Items marked **Check in game** came from a single source or from sources that disagree. Double-check those before a big crafting run.
-- **Not covered yet:** unique and named schematic variants, some optional vehicle parts, grenades, a few tool tiers, research unlock costs and landing pads.
+- **Desert run figures:** seats, fuel tanks and storage come from dune.gaming.tools. Fuel cell amounts (200 / 400 / 800) and most material volumes come from awakening.wiki. Nobody publishes fuel burn rates or water drain, so fuel is "one full refill per vehicle" and water is a rule of thumb.
+- **Not covered yet:** research unlock costs and landing pads. Grenades aren't in because they're a Trooper ability, not something you craft. A few tool tiers are missing because the game only has them as unique variants.
 - **Water** amounts are in mL. Looted parts (Mechanical Parts, Gun Parts, EMF Generator, Industrial Pump, Complex Machinery and others) can't be crafted, so they're treated as raw materials.
 - **Private servers** can change sandworm, Coriolis storm and decay settings, so the Guide's advice on those may not match ours.
 - Personal-list **ticks stay on each device**. Only the group checklist is shared.
-- **Pictures** load from awakening.wiki's servers. Four items have no wiki picture (Adept Dual Blades, Adept Missile Launcher, Cutteray Mk4, Personal Fabricator) and always use the drawn icon. If the wiki ever blocks outside sites, every item falls back to drawn icons automatically.
+- **Pictures** load from awakening.wiki's and dune.gaming.tools' servers. Five items have no picture anywhere (Adept Dual Blades, Adept Missile Launcher, Cutteray Mk4, Personal Fabricator, Serpent's Fang) and always use the drawn icon. If either site ever blocks outside sites, those items fall back to drawn icons automatically.
 - **Guide** info comes from the 1.5 patch notes, awakening.wiki and player guides. Cards marked **Check in game** came from a single source, or from sources that disagree. Some details are from before 1.5 and are labeled as such: guild size, Landsraad reset timing, and the names of the early quest steps.
 - **Base planner** figures come from the recipe data: power per structure, fuel from the generator notes (a Fuel Cell lasts 1 hour, a Spice-infused Fuel Cell 1 h 30 m) and windtrap output from its gather rate. Treat water per hour as an estimate. Wind turbine lubricant use isn't in the data.
 - **Optional vehicle modules** only exist in the data for some tiers. Where a newer one isn't listed, the builder offers the highest tier it has and says so.
