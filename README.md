@@ -13,7 +13,7 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 ## ✨ Features
 
 - **506 recipes**: materials and refining, weapons, tools, armor, stillsuits, consumables and ammo, base stations, refineries, power, water and building pieces, and **20 vehicles broken down into all 135 of their parts** (Sandbike, Buggy, Treadwheel, Scout / Assault / Carrier Ornithopter, Sandcrawler).
-- **Guide pictures**: location screenshots, enemies, trainers and quest art on most Guide cards, plus House crests, vendor portraits and gear icons, all loaded from awakening.wiki.
+- **Guide pictures**: location screenshots, enemies, trainers and quest art on most Guide cards, plus House crests and vendor portraits from awakening.wiki. House gear shows its in-game icon for 55 of 56 items (from awakening.wiki and the dune.gaming.tools item database; armor sets show their chest piece). **Tap any picture to see it bigger.**
 - **Search everything**: the magnifier at the top (or press **/**, or Ctrl+K) searches recipes, materials, Guide cards, spots and tasks at once. Enter opens the top result.
 - **Built for phones**: on a phone the tabs move to a bottom bar with icons and counts, filters fold into one **Filters** button, and the header stays on one line.
 - **New for you**: a dot on Group when someone assigns you a task or there's new activity since you last looked, a count of your open tasks, your own tasks listed first and marked new.
