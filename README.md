@@ -4,7 +4,7 @@ A **Dune: Awakening** crafting companion for our server. Look up any recipe, see
 
 Arrakis for Idiots is a single self-contained HTML file. No build step, no framework, no server of our own. It runs in the browser and stores shared group data in a free [Firebase](https://firebase.google.com) database. Friends join with a nickname and the group code; **no accounts needed**.
 
-> **Live site:** _add the link here once deployed, e.g._ `https://yourname.github.io/arrakis-for-idiots/`
+> **Live site:** https://alphadivine.github.io/arrakis-for-idiots/#craft 
 
 Recipe data is for **Update 1.5** (game version 1.5.3.3).
 
