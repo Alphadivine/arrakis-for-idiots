@@ -13,6 +13,7 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 ## ✨ Features
 
 - **506 recipes**: materials and refining, weapons, tools, armor, stillsuits, consumables and ammo, base stations, refineries, power, water and building pieces, and **20 vehicles broken down into all 135 of their parts** (Sandbike, Buggy, Treadwheel, Scout / Assault / Carrier Ornithopter, Sandcrawler).
+- **Guide pictures**: location screenshots, enemies, trainers and quest art on most Guide cards, plus House crests, vendor portraits and gear icons, all loaded from awakening.wiki.
 - **Item pictures**: real in-game icons for 558 of the 562 items, shown straight from [awakening.wiki](https://awakening.wiki). If one doesn't load, a drawn icon in the tier color takes its place. **View on wiki** on any item opens its full page.
 - **Search and filter** by category and tier: Salvaged → Copper → Iron → Steel → Aluminum → Duraluminum → Plastanium. Each tier has its own color.
 - **Full breakdown**: set how many you want and it rolls every sub-part down to raw materials, lists what to craft first and at which station, and shows everything the item is used in.
@@ -25,6 +26,7 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **Group gathering checklist**: tick a material once it's all in. Everyone sees the tick live, with **who did it**.
 - **"I'm on it" claims**: claim a material so two people don't farm the same thing. Everyone sees who's gathering what.
 - **Base storage**: record what the group already has (raw materials or crafted parts like ingots). Every total shrinks to what's still missing, at every level, so 20 Copper Ingots in storage mean fewer ingots to refine and less ore to mine.
+- **Tasks**: hand out jobs to anyone on the crew, including friends who only play on their phone and never open the site (add them by name). Assign gathering (amount filled in from what's still needed), crafting or building, or any free-form job, with an optional note and due date. Each person gets their own list with a **Copy list** button. Tick tasks off when they report back; finishing a gathering task ticks the material on the group checklist under their name. "Assign to…" on every checklist row does it in one step. The **Who** list shows app users and phone-only friends separately. Typing a name that already belongs to an app user suggests that person, and if a phone-only friend later joins the app under the same name, their tasks move to their account automatically.
 - **What can we craft now?**: from base storage, shows what's ready to craft, what's ready once you make the parts, and what's one material short (and by how much).
 - **Recent activity**: a feed of adds, claims, ticks, storage and new spots ("Mike is gathering Copper Ore").
 - **Spots board**: pin good ore, spice and salvage spots with a region, a note and up to 3 screenshots (drop, paste or pick). Screenshots are shrunk automatically.
@@ -39,6 +41,7 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
   - **Places & vendors**: regions, hubs, testing stations and shipwrecks, what vendors sell, travel costs, and where every looted part drops.
   - **Enemies & combat**: shields vs blades and darts, armor, mobility, enemy groups, bosses, sandworms, and death and repair.
   - **Quests & contracts**: the first journey chain, contract boards like Scrap Mettle, trials, trainer questlines, and a suggested path for new players.
+  - **Houses**: Atreides vs Harkonnen side by side: vendors, currency (Solari and House Scrip), and every armor, weapon, vehicle and building variant each House sells, with filters. Almost all of it is cosmetic; the few gameplay items are marked. Also covers switching Houses.
 - **Phone-friendly**: works at phone width in light and dark. Add it to your home screen and it opens like an app with its own icon.
 
 ---
@@ -149,6 +152,14 @@ service cloud.firestore {
       // spots board and its screenshots
       match /spots/{id}      { allow read, write: if isMember(); }
       match /spotImages/{id} { allow read, write: if isMember(); }
+
+      // task board and the crew list (names for friends who don't use the app)
+      match /groupTasks/{id} { allow read, write: if isMember(); }
+      match /groupCrew/{id} {
+        allow read, delete: if isMember();
+        allow create, update: if isMember() && request.resource.data.name is string &&
+          request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 24;
+      }
     }
   }
 }
@@ -207,7 +218,7 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 
 ## 🔄 Updating
 
-**Upgrading from the first version?** Paste the rules from step 5 again (they gained sections for storage, claims, activity and spots) and **Publish**, then replace `index.html`. Nothing else changes and the existing group list carries over.
+**Upgrading?** Whenever the rules in step 5 change, paste them again and **Publish**, then replace `index.html`. The latest additions are sections for storage, claims, activity and spots, then tasks and the crew list. Nothing else changes and the existing group list carries over.
 
 Replace `index.html` in the repo (or drag the new one onto Netlify). Pages redeploys in about a minute at the same link. Nothing in the database needs to change.
 
