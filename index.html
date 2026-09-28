@@ -471,6 +471,27 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
 #crewHint{margin-top:8px}
 #crewHint .pill{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 @media (max-width:760px){ .houses{grid-template-columns:1fr} }
+
+/* ---------- v8: sign-in ---------- */
+.gbtn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1f1f1f;border:1px solid #dadce0}
+.gbtn:hover{filter:none;background:#f7f8f8}
+.joinalt{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+.acctwho{display:flex;gap:10px;align-items:center;margin:10px 0}
+.acctwho .dot{width:34px;height:34px;font-size:14px}
+.acctwho small{display:block;color:var(--muted);font-size:12.5px}
+#acctSwitch p{margin:0 0 8px}
+
+/* ---------- v9: roles ---------- */
+.lock{margin:8px 0 0}
+.rolet{display:inline-block;margin-left:8px;font:700 10px/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:4px;background:var(--spice-soft);color:var(--spice)}
+.rolet.leader{background:var(--spice);color:var(--on-spice)}
+.rolep{font-size:13.5px;margin:6px 0}
+.leadercode{margin:8px 0;font-size:13.5px}
+.leadercode summary{cursor:pointer;color:var(--ibad);font-weight:600}
+.leadercode form{margin-top:8px}
+.entry.ro{grid-template-columns:4px 26px 1fr auto auto}
+.entry.ro .q{font:500 14px var(--mono);padding-right:6px}
+.entry.g.ro{grid-template-columns:4px 26px 1fr auto auto auto}
 </style>
 </head>
 <body>
@@ -525,7 +546,13 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
     <label class="fld" for="joinCode">Group code<input id="joinCode" maxlength="64" autocomplete="off" required></label>
     <p class="err" id="joinErr" hidden></p>
     <div class="toolbar"><button class="btn" id="joinGo" type="submit">Join</button><button class="btn ghost" type="button" id="joinCancel">Not now</button></div>
+    <div class="joinalt" id="joinAlt"><span>Already saved your player on another device?</span><button class="btn gbtn small" type="button" id="joinGoogle"><svg width="14" height="14" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg> Sign in with Google</button></div>
   </form>
+</dialog>
+<dialog id="acctDlg" aria-labelledby="acctTitle">
+  <div class="cardhd"><h2 id="acctTitle">Your player</h2><button class="x" id="acctClose" type="button" aria-label="Close">×</button></div>
+  <div id="acctBody"></div>
+  <div class="callout" id="acctSwitch" hidden></div>
 </dialog>
 <dialog id="guideDlg" class="wide" aria-label="How to use"></dialog>
 <dialog id="spotDlg" class="wide" aria-label="Spot"></dialog>
@@ -645,7 +672,7 @@ if (!Array.isArray(S.list)) {
   S.list = [["Sandbike Mk1", 1], ["Cutteray Mk1", 1]].filter(([n]) => ITEMS.has(n));
   S.example = true;
 }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (window.__afterSave) window.__afterSave(); };
 const hash = (location.hash || "").slice(1);
 if (["craft","gather","list","group","spots","survive","planner"].includes(hash)) S.tab = hash;
 
@@ -999,7 +1026,7 @@ function checklistHTML(rows, o) {
         ${iconHTML(n, 26)}
         <label class="nm" for="${id}"><span class="t">${esc(n)}</span>${who || `<small>${esc(r?.l || r?.o || "")}</small>`}</label>
         <span class="rt"><span class="q">${fmtQplain(n, Math.max(0, q))}</span>${o.actions && gross !== q ? `<small>of ${fmtQplain(n, gross)}</small>` : ""}</span>
-        ${o.actions ? `<div class="acts">${cl}<label class="have">In storage <input class="num" inputmode="numeric" data-stock="${esc(n)}" value="${have || ""}" placeholder="0" aria-label="${esc(n)} in storage"></label></div>` : ""}
+        ${o.actions ? `<div class="acts">${cl}${isStaff() ? `<label class="have">In storage <input class="num" inputmode="numeric" data-stock="${esc(n)}" value="${have || ""}" placeholder="0" aria-label="${esc(n)} in storage"></label>` : have ? `<span class="have">In storage <b class="num">${fmtQplain(n, have)}</b></span>` : ""}</div>` : ""}
       </div>`;
     }).join("");
   }).join("");
@@ -1010,8 +1037,8 @@ function claimHTML(n) {
   let h;
   if (!c) h = `<button class="claim" data-claim="${esc(n)}">I'm on it</button>`;
   else if (who === "m:" + G.uid) h = `<button class="claim mine" data-claim="${esc(n)}" title="Tap to drop it">You're on it · drop</button>`;
-  else h = `<span class="claim other">${crewDot(who)}${esc(crewName(who))}'s on it <button class="x sm" data-unclaim="${esc(n)}" aria-label="Unassign ${esc(n)}" title="Unassign">×</button></span>`;
-  return h + assignSelect(n);
+  else h = `<span class="claim other">${crewDot(who)}${esc(crewName(who))}'s on it${isStaff() ? ` <button class="x sm" data-unclaim="${esc(n)}" aria-label="Unassign ${esc(n)}" title="Unassign">×</button>` : ""}</span>`;
+  return h + (isStaff() ? assignSelect(n) : "");
 }
 function assignSelect(n) {
   return `<select class="assign" data-assign="${esc(n)}" aria-label="Assign ${esc(n)} to someone"><option value="">Assign to…</option>${crewOptions("")}<option value="__new">+ Add someone…</option></select>`;
@@ -1022,8 +1049,11 @@ function crewOptions(selected) {
   return `<optgroup label="Uses the app">${app.map(opt).join("")}</optgroup>${ph.length ? `<optgroup label="Phone only">${ph.map(opt).join("")}</optgroup>` : ""}`;
 }
 const claimWho = n => { const c = G.claims[n]; return c ? crewName(c.for || "m:" + c.by) : ""; };
-function entryHTML(n, q, i, extra = "", attr = "") {
+function entryHTML(n, q, i, extra = "", attr = "", ro = false) {
   const it = ITEMS.get(n);
+  if (ro) return `<div class="entry${extra ? " g" : ""} ro">
+    <span class="bar" style="background:${tierColor(it?.t ?? RAWS.get(n)?.t)}"></span>${iconHTML(n, 26)}
+    <button class="nm" data-go="${esc(n)}">${esc(n)}</button>${extra}<span class="q num">${fmtQplain(n, q)}</span><span></span></div>`;
   return `<div class="entry${extra ? " g" : ""}">
     <span class="bar" style="background:${tierColor(it?.t ?? RAWS.get(n)?.t)}"></span>${iconHTML(n, 26)}
     <button class="nm" data-go="${esc(n)}">${esc(n)}</button>${extra}
@@ -1115,11 +1145,11 @@ let taskKind = "gather", showDone = {};
 function taskRowHTML(t) {
   const sub = [t.note ? esc(t.note) : "", dueHTML(t.due), t.by !== G.uid && G.members[t.by] ? `from ${esc(nameOf(t.by))}` : ""].filter(Boolean).join(" · ");
   return `<div class="task ${t.done ? "done" : ""}">
-    <input type="checkbox" id="t_${t.id}" data-tdone="${t.id}" ${t.done ? "checked" : ""} aria-label="Done: ${esc(taskLabel(t))}">
+    <input type="checkbox" id="t_${t.id}" data-tdone="${t.id}" ${t.done ? "checked" : ""} ${isStaff() || t.who === "m:" + G.uid ? "" : "disabled title=\"Only the leader, officers or the person it's for can tick this\""} aria-label="Done: ${esc(taskLabel(t))}">
     ${t.n && (ITEMS.has(t.n) || RAWS.has(t.n)) ? iconHTML(t.n, 26) : `<span class="ic gl" style="--s:26px;--tc:var(--muted)">${svgGlyph(t.kind === "job" ? "spice" : "box")}</span>`}
     <label for="t_${t.id}" class="nm"><span class="t">${esc(taskLabel(t))}</span>${sub ? `<small>${sub}</small>` : ""}</label>
     ${t.n && (ITEMS.has(t.n) || RAWS.has(t.n)) ? `<button class="lnk tlink" data-go="${esc(t.n)}" aria-label="Open ${esc(t.n)}">Open</button>` : "<span></span>"}
-    <button class="x" data-tdel="${t.id}" aria-label="Delete task">×</button>
+    ${isStaff() ? `<button class="x" data-tdel="${t.id}" aria-label="Delete task">×</button>` : "<span></span>"}
   </div>`;
 }
 function tasksText(key) {
@@ -1137,7 +1167,8 @@ function renderTasks(V) {
   const defWho = S.lastWho && keys.has(S.lastWho) ? S.lastWho : (crew[0] ? crew[0].key : "");
   V.innerHTML = `${groupSeg("tasks")}
   <div class="col">
-    <div class="card">
+    ${isStaff() ? "" : `<div class="card"><h2>Tasks</h2><p class="lede">The leader and officers hand out tasks here. Tick yours off when you're done; you'll find them under your name on the board.</p>${staffNote("assign or delete tasks")}</div>`}
+    <div class="card" ${isStaff() ? "" : "hidden"}>
       <h2>Give someone a task</h2>
       <p class="lede">For anyone on the crew, including friends who only play on their phone. Tell them in voice or Discord, then tick it off here when they're done.</p>
       <form id="taskForm" class="taskform">
@@ -1159,9 +1190,12 @@ function renderTasks(V) {
     </div>
     <div class="card">
       <h2>Crew</h2>
-      <p class="lede">Friends who joined the app show up by themselves. Add anyone else by name.</p>
-      ${crew.map(c => `<div class="crewrow">${crewDot(c.key)}<span>${esc(c.name)}</span><span class="badge2 ${c.app ? "app" : ""}">${c.app ? "uses the app" : "phone only"}</span>${c.app ? "<span></span>" : `<button class="x" data-crewrm="${esc(c.key.slice(2))}" aria-label="Remove ${esc(c.name)}">×</button>`}</div>`).join("")}
-      <div class="toolbar"><button class="btn ghost small" id="crewAdd">+ Add someone</button></div>
+      <p class="lede">Friends who joined the app show up by themselves. ${isStaff() ? "Add anyone else by name." : ""}${isLeader() ? " Make trusted friends officers so they can help run things." : ""}</p>
+      ${crew.map(c => { const uid = c.key.slice(2), role = c.app ? roleOf(uid) : "";
+        return `<div class="crewrow">${crewDot(c.key)}<span>${esc(c.name)}${role !== "member" && role ? `<span class="rolet ${role}">${role === "leader" ? "Leader" : "Officer"}</span>` : ""}</span><span class="badge2 ${c.app ? "app" : ""}">${c.app ? "uses the app" : "phone only"}</span>${
+          c.app ? (isLeader() && uid !== G.uid && role !== "leader" ? `<button class="btn ghost small" data-officer="${esc(uid)}" data-on="${role === "officer" ? "0" : "1"}">${role === "officer" ? "Remove officer" : "Make officer"}</button>` : "<span></span>")
+                : (isStaff() ? `<button class="x" data-crewrm="${esc(uid)}" aria-label="Remove ${esc(c.name)}">×</button>` : "<span></span>")}</div>`; }).join("")}
+      ${isStaff() ? `<div class="toolbar"><button class="btn ghost small" id="crewAdd">+ Add someone</button></div>` : ""}
     </div>
   </div>
   <div class="col">
@@ -1177,7 +1211,7 @@ function renderTasks(V) {
         <div class="cardhd"><h3 class="pname">${p.none ? "" : crewDot(p.key)}${esc(p.name)} <span class="muted">${open.length} open</span></h3>
           ${open.length && !p.none ? `<button class="btn ghost small" data-tcopy="${esc(p.key)}">Copy list</button>` : ""}</div>
         ${open.map(taskRowHTML).join("") || `<p class="empty" style="padding:6px 0">All done.</p>`}
-        ${done.length ? `<button class="lnk showdone" data-showdone="${esc(p.key)}">${showDone[p.key] ? "Hide" : "Show"} ${done.length} done</button>${showDone[p.key] ? done.map(taskRowHTML).join("") + `<div class="toolbar"><button class="btn ghost small" data-cleardone="${esc(p.key)}">Clear done</button></div>` : ""}` : ""}
+        ${done.length ? `<button class="lnk showdone" data-showdone="${esc(p.key)}">${showDone[p.key] ? "Hide" : "Show"} ${done.length} done</button>${showDone[p.key] ? done.map(taskRowHTML).join("") + (isStaff() ? `<div class="toolbar"><button class="btn ghost small" data-cleardone="${esc(p.key)}">Clear done</button></div>` : "") : ""}` : ""}
       </div>`;
     }).join("")}
   </div>`;
@@ -1185,10 +1219,10 @@ function renderTasks(V) {
   wireGroupSeg(V);
   V.querySelectorAll("[data-go]").forEach(b => b.onclick = () => select(b.dataset.go));
   V.querySelectorAll("[data-kind]").forEach(b => b.onclick = () => { taskKind = b.dataset.kind; renderGroup(); });
-  $("tWho").onchange = async () => { if ($("tWho").value === "__new") { const k = await addCrewPrompt(); if (k) { S.lastWho = k; save(); } rerender(); } else { S.lastWho = $("tWho").value; save(); } };
+  if (isStaff()) $("tWho").onchange = async () => { if ($("tWho").value === "__new") { const k = await addCrewPrompt(); if (k) { S.lastWho = k; save(); } rerender(); } else { S.lastWho = $("tWho").value; save(); } };
   const ti = $("tItem");
   if (ti && taskKind === "gather") ti.onchange = () => { const r = rawSorted(rollup(G.items.map(x => [x.n, x.q]), Object.fromEntries(Object.entries(G.stock).map(([n, s]) => [n, s.q]))).raw).find(([n]) => n.toLowerCase() === ti.value.trim().toLowerCase()); if (r && !$("tQty").value) $("tQty").value = Math.max(1, r[1]); };
-  $("taskForm").onsubmit = async e => {
+  if (isStaff()) $("taskForm").onsubmit = async e => {
     e.preventDefault();
     const err = $("tErr"), who = $("tWho").value;
     const fail = m => { err.textContent = m; err.hidden = false; };
@@ -1210,7 +1244,8 @@ function renderTasks(V) {
   V.querySelectorAll("[data-showdone]").forEach(b => b.onclick = () => { showDone[b.dataset.showdone] = !showDone[b.dataset.showdone]; renderGroup(); });
   V.querySelectorAll("[data-cleardone]").forEach(b => armConfirm(b, "Tap again to clear", () => run(Group.clearDone(b.dataset.cleardone === "__none" ? "" : b.dataset.cleardone))));
   V.querySelectorAll("[data-crewrm]").forEach(b => armConfirm(b, "Remove?", () => run(Group.removeCrew(b.dataset.crewrm))));
-  $("crewAdd").onclick = () => addCrewPrompt().then(k => k && rerender());
+  const ca = $("crewAdd"); if (ca) ca.onclick = () => addCrewPrompt().then(k => k && rerender());
+  V.querySelectorAll("[data-officer]").forEach(b => b.onclick = () => run(Group.setOfficer(b.dataset.officer, b.dataset.on === "1").then(() => toast(`${nameOf(b.dataset.officer)} is ${b.dataset.on === "1" ? "now an officer" : "no longer an officer"}`))));
 }
 function groupSeg(active) {
   const open = G.tasks.filter(t => !t.done).length;
@@ -1336,16 +1371,17 @@ function renderGroup() {
     <div class="card">
       <h2>Group list</h2>
       <p class="lede">Shared with everyone in the group${memberCount > 1 ? ` (${memberCount} players)` : ""}. Anyone can add, change or remove. Add things from any recipe with “Add to group”.</p>
-      ${G.items.length ? G.items.map((x, i) => entryHTML(x.n, x.q, i, `<span class="by" title="Added by ${esc(nameOf(x.by))}">${dot(x.by, nameOf(x.by))}<span>${esc(nameOf(x.by))}</span></span>`)).join("")
+      ${G.items.length ? G.items.map((x, i) => (isStaff() ? (h => h) : (h => h.replace(/<button class="x" data-rm="\d+"[^>]*>×<\/button>/, "<span></span>")))(entryHTML(x.n, x.q, i, `<span class="by" title="Added by ${esc(nameOf(x.by))}">${dot(x.by, nameOf(x.by))}<span>${esc(nameOf(x.by))}</span></span>`))).join("")
       : `<p class="empty" style="padding:8px 0">Nothing on the group list yet. Open a recipe in Craft and tap “Add to group”.</p>`}
-      ${G.items.length ? `<div class="toolbar"><button class="btn ghost small" id="gClear">Clear group list</button></div>` : ""}
+      ${G.items.length && isStaff() ? `<div class="toolbar"><button class="btn ghost small" id="gClear">Clear group list</button></div>` : ""}
     </div>
     ${runHTML(crafts, stockRows.length ? "What's left to craft after what's already in storage, grouped by station." : "Everything the group list needs crafted, grouped by station.")}
     <div class="card">
       <h2>Base storage</h2>
       <p class="lede">What the group already has. It's taken off everything above and below, so ingots in storage mean less ore to mine. Set raw materials straight from the checklist.</p>
-      ${stockRows.length ? stockRows.map((s, i) => entryHTML(s.n, s.q, i, "", "s")).join("") : `<p class="empty" style="padding:4px 0 8px">Nothing recorded yet.</p>`}
-      <form class="addstock" id="stockForm">
+      ${stockRows.length ? stockRows.map((s, i) => entryHTML(s.n, s.q, i, "", "s", !isStaff())).join("") : `<p class="empty" style="padding:4px 0 8px">Nothing recorded yet.</p>`}
+      ${isStaff() ? "" : staffNote("change storage")}
+      <form class="addstock" id="stockForm" ${isStaff() ? "" : "hidden"}>
         <input id="stockName" list="allNames" placeholder="Item, e.g. Copper Ingot" aria-label="Item to add to storage" autocomplete="off">
         <input id="stockQty" class="num" inputmode="numeric" placeholder="Qty" aria-label="Quantity in storage">
         <button class="btn small" type="submit">Add</button>
@@ -1370,7 +1406,7 @@ function renderGroup() {
       <p class="lede">${rows.length ? `${doneCount} of ${rows.length} materials covered. Tap “I'm on it” so nobody farms the same thing, enter what's in storage, and tick it when it's all in.` : "Add items to the group list to see what to gather."}</p>
       ${rows.length ? `<div class="progress" aria-hidden="true"><i style="width:${doneCount / rows.length * 100}%"></i></div>` : ""}
       ${checklistHTML(rows, opts)}
-      ${Object.keys(G.got).length ? `<div class="toolbar"><button class="btn ghost small" id="gUntick">Untick all</button></div>` : ""}
+      ${Object.keys(G.got).length && isStaff() ? `<div class="toolbar"><button class="btn ghost small" id="gUntick">Untick all</button></div>` : ""}
     </div>
     <div class="card">
       <h2>Recent activity</h2>
@@ -1582,12 +1618,12 @@ async function openSpot(id) {
     ${sp.n ? `<p><button class="pill" data-go="${esc(sp.n)}">${iconHTML(sp.n, 20)} ${esc(sp.n)}</button></p>` : ""}
     ${sp.note ? `<p class="note">${esc(sp.note)}</p>` : ""}
     <div class="gallery" id="svGallery">${(sp.imgs || []).map(() => `<span class="ph">Loading screenshot…</span>`).join("")}</div>
-    <div class="toolbar"><button class="btn ghost small" id="svEdit">Edit</button><button class="btn ghost small" id="svDel">Delete spot</button></div>
+    ${sp.by === G.uid || isStaff() ? `<div class="toolbar"><button class="btn ghost small" id="svEdit">Edit</button><button class="btn ghost small" id="svDel">Delete spot</button></div>` : ""}
   </div>`;
   $("svClose").onclick = () => d.close();
   d.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { d.close(); select(b.dataset.go); });
-  $("svEdit").onclick = () => editSpot(id);
-  armConfirm($("svDel"), "Tap again to delete for everyone", async () => { try { await Group.deleteSpot(sp); d.close(); toast("Spot deleted"); } catch (e) { toast(errText(e)); } });
+  if ($("svEdit")) $("svEdit").onclick = () => editSpot(id);
+  if ($("svDel")) armConfirm($("svDel"), "Tap again to delete for everyone", async () => { try { await Group.deleteSpot(sp); d.close(); toast("Spot deleted"); } catch (e) { toast(errText(e)); } });
   d.showModal();
   G.spotImgCache = G.spotImgCache || {};
   const imgs = await Promise.all((sp.imgs || []).map(async iid => {
@@ -1599,7 +1635,12 @@ async function openSpot(id) {
 }
 
 /* ---------- group sync (Firebase) ---------- */
-const G = { state: "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [] };
+const G = { state: "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [], roles: {} };
+/* roles: the leader (whoever entered the leader code) and officers they pick. Everyone else is a member. */
+const roleOf = uid => (G.roles[uid] && G.roles[uid].role) || "member";
+const isStaff = (uid = G.uid) => ["leader", "officer"].includes(roleOf(uid));
+const isLeader = (uid = G.uid) => roleOf(uid) === "leader";
+const staffNote = what => `<p class="hint lock">🔒 Only the leader and officers can ${what}.</p>`;
 let fb = null, unsubs = [];
 const gotId = n => "m_" + n.replace(/[^A-Za-z0-9]+/g, "_").slice(0, 120);
 const errText = e => (e && e.code === "permission-denied") ? "The group didn't accept that. You may have been removed; try rejoining." : "Couldn't reach the group. Check your connection and try again.";
@@ -1645,6 +1686,9 @@ const Group = {
   async clearDone(who) { const b = fb.db.batch(); G.tasks.filter(t => t.done && (!who || t.who === who)).forEach(t => b.delete(Group.col("groupTasks").doc(t.id))); return b.commit(); },
   async addCrew(name) { const ref = await Group.col("groupCrew").add({ name: name.slice(0, 24), by: G.uid, at: now() }); return "g:" + ref.id; },
   removeCrew: id => Group.col("groupCrew").doc(id).delete(),
+  setOfficer: (uid, on) => on ? Group.col("roles").doc(uid).set({ role: "officer", by: G.uid, at: now() }) : Group.col("roles").doc(uid).delete(),
+  /* the code goes to a write-only record the rules check against; the role record itself never holds it */
+  async claimLeader(code) { await Group.col("leaderClaims").doc(G.uid).set({ code, at: now() }); await Group.col("roles").doc(G.uid).set({ role: "leader", by: G.uid, at: now() }); },
   async add(n, q) {
     const ex = G.items.find(x => x.n === n);
     if (ex) await Group.col("groupItems").doc(ex.id).update({ q: Math.min(9999, ex.q + q) });
@@ -1726,10 +1770,16 @@ function startGroup() {
   });
   watch("groupGot", s => { G.got = {}; s.forEach(d => { const x = d.data(); G.got[x.n] = { n: x.n, by: x.by, for: x.for || "" }; }); });
   watch("groupClaims", s => { G.claims = {}; s.forEach(d => { const x = d.data(); G.claims[x.n] = { n: x.n, by: x.by, for: x.for || "" }; }); });
+  watch("roles", s => { G.roles = {}; s.forEach(d => { const x = d.data(); if (x.role === "leader" || x.role === "officer") G.roles[d.id] = { role: x.role }; }); renderAccount(); });
   watch("groupCrew", s => { G.crew = []; s.forEach(d => { const x = d.data(); G.crew.push({ id: d.id, name: x.name || "Someone" }); }); G.crew.sort((a, b) => a.name.localeCompare(b.name)); });
   watch("groupTasks", s => {
     G.tasks = []; s.forEach(d => { const x = d.data(); G.tasks.push({ id: d.id, kind: x.kind || "job", n: x.n || "", q: x.q || 0, text: x.text || "", note: x.note || "", due: x.due || "", who: x.who || "", done: !!x.done, doneAt: ms(x.doneAt), by: x.by, at: ms(x.at) }); });
     G.tasks.sort((a, b) => a.at - b.at);
+    if (G.handover && G.me) {
+      const old = G.handover; G.handover = null;
+      G.tasks.filter(t => t.who === old).forEach(t => Group.col("groupTasks").doc(t.id).update({ who: "m:" + G.uid }).catch(() => {}));
+      Object.values(G.claims).filter(c => c.for === old || (!c.for && "m:" + c.by === old)).forEach(c => Group.col("groupClaims").doc(gotId(c.n)).set({ n: c.n, by: G.uid, for: "", at: now() }).catch(() => {}));
+    }
   });
   watch("groupStock", s => { G.stock = {}; s.forEach(d => { const x = d.data(); if (ITEMS.has(x.n) || RAWS.has(x.n)) G.stock[x.n] = { n: x.n, q: x.q, by: x.by }; }); });
   watch("players", s => { G.players = {}; s.forEach(d => { G.players[d.id] = d.data(); }); });
@@ -1743,6 +1793,64 @@ function startGroup() {
   }, fail));
 }
 
+/* ---------- sign-in & personal sync ---------- */
+/* Everyone starts as an anonymous player on this device. "Save my account" links that same
+   player to Google (same id, so name, tasks and history stay), and after that the personal
+   parts of the app (lists, ticks, saved, plan) sync through boards/<group>/users/<uid>. */
+let memberUnsub = null, userUnsub = null, pushPT = null, applyingRemote = false;
+let DEVICE = ""; try { DEVICE = localStorage.getItem(KEY + "-device") || ""; if (!DEVICE) { DEVICE = Math.random().toString(36).slice(2, 12); localStorage.setItem(KEY + "-device", DEVICE); } } catch (e) { DEVICE = Math.random().toString(36).slice(2, 12); }
+const PERSONAL = ["list", "got", "fav", "recent", "plan", "vopt", "route", "example", "planExample"];
+const isSaved = () => !!(G.user && !G.user.isAnonymous);
+const googleEmail = () => { const p = (G.user && G.user.providerData || []).find(x => x && x.providerId === "google.com"); return (p && p.email) || (G.user && G.user.email) || ""; };
+function personalSnapshot() { const o = {}; PERSONAL.forEach(k => { o[k] = S[k] === undefined ? null : S[k]; }); return o; }
+function pushPersonal(now) {
+  if (!isSaved() || !fb || applyingRemote) return;
+  clearTimeout(pushPT);
+  const go = () => fb.board.collection("users").doc(G.uid).set({ ...JSON.parse(JSON.stringify(personalSnapshot())), dev: DEVICE, at: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+  if (now) go(); else pushPT = setTimeout(go, 800);
+}
+window.__afterSave = () => pushPersonal(false);
+function mergePersonal(cloud) {
+  const localList = S.example ? [] : (S.list || []);
+  const list = (cloud.list || []).map(x => [...x]);
+  for (const [n, q] of localList) { const e = list.find(x => x[0] === n); if (e) e[1] = Math.max(e[1], q); else list.push([n, q]); }
+  const uniq = a => [...new Set(a)];
+  S.list = list.length ? list : (cloud.list || []);
+  S.example = !S.list.length && !!cloud.example;
+  S.got = { ...(cloud.got || {}), ...(S.got || {}) };
+  S.fav = uniq([...(cloud.fav || []), ...(S.fav || [])]);
+  S.recent = uniq([...(cloud.recent || []), ...(S.recent || [])]).slice(0, 15);
+  const cloudPlan = cloud.plan && Object.keys(cloud.plan).filter(k => k !== "__empty").length ? cloud.plan : null;
+  if (cloudPlan) { S.plan = cloudPlan; S.planExample = !!cloud.planExample; }
+  S.vopt = { ...(cloud.vopt || {}), ...(S.vopt || {}) };
+  S.route = { ...(cloud.route || {}), ...(S.route || {}) };
+}
+function applyRemote(cloud) {
+  applyingRemote = true;
+  PERSONAL.forEach(k => { if (cloud[k] !== undefined && cloud[k] !== null) S[k] = cloud[k]; });
+  save();
+  applyingRemote = false;
+}
+function startUserSync(uid) {
+  let first = true;
+  userUnsub = fb.board.collection("users").doc(uid).onSnapshot(doc => {
+    if (first) {
+      first = false;
+      if (doc.exists) { applyingRemote = true; mergePersonal(doc.data()); save(); applyingRemote = false; }
+      pushPersonal(true);
+    } else if (doc.exists && doc.data().dev !== DEVICE) applyRemote(doc.data());
+    else return;
+    updateBadge(); pushMine();
+    if (S.tab === "list") renderList(); else if (S.tab === "planner") renderPlanner(); else rerender();
+  }, () => {});
+}
+function resetGroup() {
+  stopGroup();
+  if (memberUnsub) memberUnsub(); memberUnsub = null;
+  if (userUnsub) userUnsub(); userUnsub = null;
+  Object.assign(G, { me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [] });
+}
+
 function initGroup() {
   const cfg = CONFIG.FIREBASE;
   if (!cfg.apiKey || !cfg.projectId) return setStatus("solo");
@@ -1754,10 +1862,17 @@ function initGroup() {
     fb.board = fb.db.collection("boards").doc(CONFIG.GROUP_ID || "main");
   } catch (e) { return setStatus("offline"); }
   fb.auth.onAuthStateChanged(user => {
-    if (!user) return;
-    G.uid = user.uid;
+    if (!user) { fb.auth.signInAnonymously().catch(() => setStatus("offline")); return; }
+    if (G.uid === user.uid && memberUnsub) {            // same player, e.g. just linked to Google
+      const wasSaved = isSaved(); G.user = user;
+      if (!wasSaved && isSaved() && !userUnsub) startUserSync(user.uid);
+      renderAccount(); return;
+    }
+    resetGroup();
+    G.uid = user.uid; G.user = user;
+    if (isSaved()) startUserSync(user.uid);
     let first = true;
-    fb.board.collection("members").doc(user.uid).onSnapshot(doc => {
+    memberUnsub = fb.board.collection("members").doc(user.uid).onSnapshot(doc => {
       const was = !!G.me;
       G.me = doc.exists ? doc.data() : null;
       if (G.me) {
@@ -1775,8 +1890,96 @@ function initGroup() {
       first = false;
     }, () => setStatus("offline"));
   });
-  fb.auth.signInAnonymously().catch(() => setStatus("offline"));
 }
+
+/* ---------- Google ---------- */
+const googleProvider = () => { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" }); return p; };
+function authError(e) {
+  const c = e && e.code || "";
+  if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") return "";
+  if (c === "auth/popup-blocked") return "Your browser blocked the Google window. Allow pop-ups for this site and try again.";
+  if (c === "auth/operation-not-allowed") return "Google sign-in isn't turned on for this group yet. Ask whoever runs the site to switch it on in Firebase.";
+  if (c === "auth/unauthorized-domain") return "This site's address isn't approved in Firebase yet. Ask whoever runs the site to add it under Authorized domains.";
+  if (c === "auth/network-request-failed") return "Couldn't reach Google. Check your connection and try again.";
+  return "Google sign-in didn't work. Try again.";
+}
+async function saveWithGoogle() {
+  const user = fb.auth.currentUser; if (!user) return;
+  try {
+    await user.linkWithPopup(googleProvider());
+    G.user = fb.auth.currentUser;
+    if (!userUnsub) startUserSync(G.uid);
+    pushPersonal(true);
+    renderAccount();
+    toast("Saved. Sign in with Google on any other device to pick up where you left off.");
+  } catch (e) {
+    if (e && (e.code === "auth/credential-already-in-use" || e.code === "auth/email-already-in-use") && e.credential) return offerSwitch(e.credential);
+    const m = authError(e); if (m) toast(m);
+  }
+}
+function offerSwitch(cred) {
+  const box = $("acctSwitch");
+  box.hidden = false;
+  box.innerHTML = `<p><b>That Google account already has a player.</b> Switch this device to it? ${G.me ? `This device's player (${esc(G.me.name)}) will be removed and its tasks handed to your saved player. ` : ""}Your lists on this device are merged in.</p>
+    <div class="toolbar"><button class="btn small" id="acctSwitchGo">Switch to my saved player</button><button class="btn ghost small" id="acctSwitchNo">Cancel</button></div>`;
+  $("acctSwitchNo").onclick = () => { box.hidden = true; };
+  $("acctSwitchGo").onclick = async () => {
+    $("acctSwitchGo").disabled = true;
+    try { await switchTo(cred); $("acctDlg").close(); toast("Switched to your saved player."); }
+    catch (e) { toast(authError(e) || "Couldn't switch. Try again."); $("acctSwitchGo").disabled = false; }
+  };
+}
+async function switchTo(cred) {
+  const oldKey = "m:" + G.uid, hadMember = !!G.me;
+  if (hadMember) {                                   // remove this device's player while we still are it
+    await fb.board.collection("players").doc(G.uid).delete().catch(() => {});
+    await fb.board.collection("members").doc(G.uid).delete().catch(() => {});
+    G.handover = oldKey;
+  }
+  await fb.auth.signInWithCredential(cred);
+}
+async function signInWithGoogle() {
+  try {
+    await fb.auth.signInWithPopup(googleProvider());
+    $("joinDlg").close();
+    toast("Signed in with Google.");
+  } catch (e) { const m = authError(e); if (m) { $("joinErr").textContent = m; $("joinErr").hidden = false; } }
+}
+async function signOutGoogle() {
+  try { await fb.auth.signOut(); $("acctDlg").close(); toast("Signed out. Your saved player is waiting when you sign back in."); } catch (e) { toast("Couldn't sign out. Try again."); }
+}
+function renderAccount() {
+  const d = $("acctDlg"); if (!d || !d.open) return;
+  const saved = isSaved();
+  $("acctBody").innerHTML = `
+    <div class="acctwho">${G.me ? dot(G.uid, G.me.name) : ""}<div><b>${esc(G.me ? G.me.name : "Not in the group yet")}</b><small>${saved ? `Saved to Google · ${esc(googleEmail())}` : "Only on this device"}</small></div></div>
+    <p class="lede">${saved ? "Your name, tasks, lists, ticks, saved recipes and base plan follow you to any device where you sign in with this Google account." : "Right now this player lives in this browser. Save it to your Google account to use the app on your phone and PC with the same name, tasks and lists."}</p>
+    ${G.me ? `<p class="rolep">Role: <b>${{ leader: "Leader", officer: "Officer", member: "Member" }[roleOf(G.uid)]}</b>${isStaff() ? "" : " · leaders and officers hand out tasks and manage storage"}</p>` : ""}
+    ${G.me && !isStaff() ? `<details class="leadercode"><summary>Run this group? Enter the leader code</summary>
+      <form id="leaderForm" class="addstock" style="grid-template-columns:1fr auto"><input id="leaderCode" autocomplete="off" placeholder="Leader code" aria-label="Leader code"><button class="btn small" type="submit">Unlock</button></form>
+      <p class="err" id="leaderErr" hidden></p></details>` : ""}
+    <div class="toolbar">
+      ${saved ? `<button class="btn ghost small" id="acctOut">Sign out</button>` : `<button class="btn gbtn" id="acctSave">${GOOGLE_G} Save my account with Google</button>`}
+      ${G.me ? `<button class="btn ghost small" id="acctRename">Change name</button>` : ""}
+    </div>`;
+  const sv = $("acctSave"); if (sv) sv.onclick = saveWithGoogle;
+  const so = $("acctOut"); if (so) armConfirm(so, "Tap again to sign out", signOutGoogle);
+  const rn = $("acctRename"); if (rn) rn.onclick = () => { d.close(); openJoin(); };
+  const lf = $("leaderForm");
+  if (lf) lf.onsubmit = async e => {
+    e.preventDefault();
+    const code = $("leaderCode").value.trim(); if (!code) return;
+    try { await Group.claimLeader(code); toast("You're the leader now."); setTimeout(renderAccount, 300); }
+    catch (ex) { const er = $("leaderErr"); er.textContent = ex && ex.code === "permission-denied" ? "That leader code didn't match." : "Couldn't reach the group. Try again."; er.hidden = false; }
+  };
+}
+function openAccount() {
+  if (G.state !== "live") return openJoin();
+  $("acctSwitch").hidden = true;
+  $("acctDlg").showModal();
+  renderAccount();
+}
+const GOOGLE_G = `<svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
 
 function openJoin() {
   if (G.state === "solo") { toast("Group sync isn't set up on this copy yet."); return; }
@@ -1787,13 +1990,16 @@ function openJoin() {
   $("joinCode").closest(".fld").hidden = renaming;
   $("joinCode").required = !renaming;
   $("joinGo").textContent = renaming ? "Save" : "Join";
+  $("joinAlt").hidden = renaming;
   $("joinName").value = G.me ? G.me.name : (localStorage.getItem(KEY + "-name") || "");
   $("joinErr").hidden = true;
   if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
   setTimeout(() => $("joinName").focus(), 30);
 }
 $("joinCancel").onclick = () => $("joinDlg").close();
-$("status").onclick = openJoin;
+$("status").onclick = () => G.state === "live" ? openAccount() : openJoin();
+$("acctClose").onclick = () => $("acctDlg").close();
+$("joinGoogle").onclick = signInWithGoogle;
 $("joinForm").addEventListener("submit", async e => {
   e.preventDefault();
   const name = $("joinName").value.trim().slice(0, 24), code = $("joinCode").value.trim();
@@ -2076,8 +2282,10 @@ function guideHTML() {
     <li><b>Look up a material in Gather.</b> Where to find it, what tool gathers it, and everything it's used in.</li>
     <li><b>Plan it.</b> <i>Add to my list</i> puts it on <b>Mine</b>, your own gear goals${group ? ". <i>Add to group</i> puts it on the shared <b>Group</b> list for base projects and vehicles you build together" : ""}.</li>
     ${group ? `<li><b>Split the work in Group.</b> Tap <i>I'm on it</i> on a material so nobody farms the same thing. Type what's already <i>In storage</i> and every total shrinks to what's still missing. Tick it once it's all in. Everyone sees who did what in <i>Recent activity</i>, and <i>What can we craft now?</i> shows what storage already covers.</li>
+    <li><b>Who can do what.</b> Everyone can add to the group list, claim, tick and add spots. The <b>leader</b> and <b>officers</b> also hand out and delete tasks, change base storage, manage the crew, remove items and clear lists. Tap your name at the top to see your role.</li>
     <li><b>Hand out jobs in Group → Tasks.</b> Add friends who only play on their phone by name, assign gathering, crafting or any other job, tell them in voice, and tick it off when they report back.</li>
     <li><b>Share good spots in Spots.</b> Pin an ore ridge, a spice field or a salvage wreck with a note and up to three screenshots. You can paste a screenshot straight in.</li>` : ""}
+    <li><b>Using it on more than one device?</b> Tap your name at the top and <i>Save my account with Google</i>. Then sign in with Google on your other phone or PC and everything comes with you.</li>
     <li><b>Copy for Discord</b> on any checklist puts the gathering list on your clipboard, ready to paste.</li>
     <li><b>New to the game?</b> <b>Guide</b> has a step-by-step path from the crash site to the Deep Desert, survival tips, and how guilds, factions, skills, places, vendors, enemies and quests work. It has its own search.</li>
   </ol>

@@ -26,6 +26,8 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **Group gathering checklist**: tick a material once it's all in. Everyone sees the tick live, with **who did it**.
 - **"I'm on it" claims**: claim a material so two people don't farm the same thing. Everyone sees who's gathering what.
 - **Base storage**: record what the group already has (raw materials or crafted parts like ingots). Every total shrinks to what's still missing, at every level, so 20 Copper Ingots in storage mean fewer ingots to refine and less ore to mine.
+- **Optional Google sign-in**: everyone can still join with just a name and the group code. Anyone who wants the app on more than one device taps their name → **Save my account with Google**. Their same player (name, tasks, history) is linked to Google, and My list, ticks, Saved/Recent, the base plan and vehicle module picks sync across devices. On a new device, **Sign in with Google** in the join box goes straight to their player without the code. If a Google account already has a player, the app offers to switch to it and hands over any tasks.
+- **Leader and officers**: whoever enters the leader code becomes leader and can make trusted friends officers from the Crew list. Leader and officers hand out and delete tasks, change base storage, manage the crew, remove group list items, clear lists, untick everything, and edit or delete anyone's spots. Members can still add to the group list, change amounts, claim with "I'm on it", tick gathered materials, tick their own tasks, and add and edit their own spots. The database rules enforce all of this.
 - **Tasks**: hand out jobs to anyone on the crew, including friends who only play on their phone and never open the site (add them by name). Assign gathering (amount filled in from what's still needed), crafting or building, or any free-form job, with an optional note and due date. Each person gets their own list with a **Copy list** button. Tick tasks off when they report back; finishing a gathering task ticks the material on the group checklist under their name. "Assign to…" on every checklist row does it in one step. The **Who** list shows app users and phone-only friends separately. Typing a name that already belongs to an app user suggests that person, and if a phone-only friend later joins the app under the same name, their tasks move to their account automatically.
 - **What can we craft now?**: from base storage, shows what's ready to craft, what's ready once you make the parts, and what's one material short (and by how much).
 - **Recent activity**: a feed of adds, claims, ticks, storage and new spots ("Mike is gathering Copper Ore").
@@ -55,10 +57,12 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 
 Who can do what (enforced by the database rules, not just hidden in the page):
 
-| | Recipes & guide | Group list, storage, claims, spots | Change a player's list | Post activity |
-|---|---|---|---|---|
-| Anyone with the link | ✅ | ❌ | ❌ | ❌ |
-| Joined with the group code | ✅ | ✅ read and change | Only their own | Only as themselves |
+| | Recipes & guide | See group data | Add to list, claim, tick, add spots | Assign tasks, storage, crew, remove, clear | Make officers |
+|---|---|---|---|---|---|
+| Anyone with the link | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Member (joined with the group code) | ✅ | ✅ | ✅ | ❌ (can tick their own tasks) | ❌ |
+| Officer | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Leader (entered the leader code) | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -81,7 +85,11 @@ In **Firestore Database → Data**:
 1. **Start collection** → ID `boards`.
 2. Document ID `main`. The console needs at least one field, so add `name` (string) = `Arrakis for Idiots`. Nothing reads it.
 3. Open `main` → **Start collection** → ID `config`.
-4. Document ID `access`, with one field: `code` (string) = your group code. This is what you give your friends.
+4. Document ID `access`, with two fields: `code` (string) = your group code, which you give your friends; and `leaderCode` (string) = a different code only you know, which makes you leader.
+
+### 4b. Turn on Google sign-in (optional, for using the app on more than one device)
+1. **Build → Authentication → Sign-in method → Add new provider → Google → Enable**. Pick your email as the support email, then **Save**. Keep **Anonymous** enabled too.
+2. **Authentication → Settings → Authorized domains → Add domain** → `alphadivine.github.io` (your site's address, without `https://` or the path).
 
 ### 5. Set the security rules
 **Firestore Database → Rules** → replace everything with this, then **Publish**:
@@ -94,53 +102,101 @@ service cloud.firestore {
 
       function signedIn() { return request.auth != null; }
       function isMember() {
-        return signedIn() &&
-          exists(/databases/$(database)/documents/boards/$(board)/members/$(request.auth.uid));
+        return signedIn() && exists(/databases/$(database)/documents/boards/$(board)/members/$(request.auth.uid));
       }
-      function codeMatches() {
-        return request.resource.data.code ==
-          get(/databases/$(database)/documents/boards/$(board)/config/access).data.code;
+      function hasRole() {
+        return exists(/databases/$(database)/documents/boards/$(board)/roles/$(request.auth.uid));
       }
+      function myRole() {
+        return get(/databases/$(database)/documents/boards/$(board)/roles/$(request.auth.uid)).data.role;
+      }
+      function isStaff()  { return isMember() && hasRole() && myRole() in ['leader', 'officer']; }
+      function isLeader() { return isMember() && hasRole() && myRole() == 'leader'; }
+      function me() { return 'm:' + request.auth.uid; }
+      function access() { return get(/databases/$(database)/documents/boards/$(board)/config/access).data; }
+      function codeMatches() { return request.resource.data.code == access().code; }
       function goodName() {
         return request.resource.data.name is string &&
           request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 24;
       }
+      function onlyChanges(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
 
-      // the group code itself: the app can never read or change it
+      // the group code and leader code: the app can never read or change them
       match /config/{doc} { allow read, write: if false; }
 
-      // joining: a player writes their own member record with the right code
+      // joining: a player writes their own member record with the right group code
       match /members/{uid} {
         allow read: if isMember() || (signedIn() && request.auth.uid == uid);
         allow create, update: if signedIn() && request.auth.uid == uid && codeMatches() && goodName();
-        allow delete: if false;
+        allow delete: if signedIn() && request.auth.uid == uid;   // leaving, or switching to a saved player
       }
 
-      // the shared group list and its ticks: members only
+      // roles: the leader proves the leader code once; the leader makes and removes officers
+      match /leaderClaims/{uid} {
+        allow read, delete: if false;
+        allow create, update: if isMember() && request.auth.uid == uid &&
+          request.resource.data.code == access().leaderCode;
+      }
+      match /roles/{uid} {
+        allow read: if isMember();
+        allow create, update: if
+          (isMember() && request.auth.uid == uid && request.resource.data.role == 'leader' &&
+             exists(/databases/$(database)/documents/boards/$(board)/leaderClaims/$(uid))) ||
+          (isLeader() && request.auth.uid != uid && request.resource.data.role == 'officer');
+        allow delete: if isLeader() && request.auth.uid != uid;
+      }
+
+      // group list: everyone adds and changes amounts; only leader/officers remove
       match /groupItems/{id} {
-        allow read, delete: if isMember();
+        allow read: if isMember();
         allow create, update: if isMember() &&
           request.resource.data.n is string &&
           request.resource.data.q is int && request.resource.data.q > 0 && request.resource.data.q <= 9999;
+        allow delete: if isStaff();
       }
-      match /groupGot/{id} { allow read, write: if isMember(); }
 
-      // each player's own list: the group can read it, only its owner can write it
-      match /players/{uid} {
+      // gathered ticks: anyone ticks as themselves; untick your own, or leader/officers untick any
+      match /groupGot/{id} {
         allow read: if isMember();
-        allow write: if isMember() && request.auth.uid == uid;
+        allow create, update: if isMember() && request.resource.data.by == request.auth.uid;
+        allow delete: if isStaff() || (isMember() && (resource.data.by == request.auth.uid || resource.data.for == me()));
       }
 
-      // base storage counts
+      // "I'm on it": claim for yourself; leader/officers claim for anyone
+      match /groupClaims/{id} {
+        allow read: if isMember();
+        allow create, update: if isStaff() ||
+          (isMember() && request.resource.data.by == request.auth.uid && request.resource.data.for in ['', me()]);
+        allow delete: if isStaff() ||
+          (isMember() && ((resource.data.by == request.auth.uid && resource.data.for in ['', me()]) || resource.data.for == me()));
+      }
+
+      // base storage: everyone sees it, leader/officers change it
       match /groupStock/{id} {
-        allow read, delete: if isMember();
-        allow create, update: if isMember() &&
+        allow read: if isMember();
+        allow delete: if isStaff();
+        allow create, update: if isStaff() &&
           request.resource.data.n is string &&
           request.resource.data.q is int && request.resource.data.q > 0 && request.resource.data.q <= 10000000;
       }
 
-      // "I'm on it" claims
-      match /groupClaims/{id} { allow read, write: if isMember(); }
+      // tasks: leader/officers hand out and delete; the person a task is for can tick it done
+      match /groupTasks/{id} {
+        allow read: if isMember();
+        allow create, delete: if isStaff();
+        allow update: if isStaff() ||
+          (isMember() && resource.data.who == me() && onlyChanges(['done', 'doneBy', 'doneAt'])) ||
+          (isMember() && request.resource.data.who == me() && onlyChanges(['who']) &&
+             resource.data.who.matches('m:.+') &&
+             !exists(/databases/$(database)/documents/boards/$(board)/members/$(resource.data.who.split(':')[1])));
+      }
+
+      // crew list (names for friends who don't use the app): leader/officers manage it
+      match /groupCrew/{id} {
+        allow read: if isMember();
+        allow delete: if isStaff();
+        allow create, update: if isStaff() && goodName();
+      }
 
       // recent activity: members add entries as themselves; nobody edits history
       match /groupLog/{id} {
@@ -149,16 +205,27 @@ service cloud.firestore {
         allow update, delete: if false;
       }
 
-      // spots board and its screenshots
-      match /spots/{id}      { allow read, write: if isMember(); }
-      match /spotImages/{id} { allow read, write: if isMember(); }
+      // each player's own list: the group can read it, only its owner can write it
+      match /players/{uid} {
+        allow read: if isMember();
+        allow write: if isMember() && request.auth.uid == uid;
+      }
 
-      // task board and the crew list (names for friends who don't use the app)
-      match /groupTasks/{id} { allow read, write: if isMember(); }
-      match /groupCrew/{id} {
-        allow read, delete: if isMember();
-        allow create, update: if isMember() && request.resource.data.name is string &&
-          request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 24;
+      // private synced data for players who saved their account to Google
+      match /users/{uid} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
+
+      // spots: anyone adds; the author or leader/officers edit and delete
+      match /spots/{id} {
+        allow read: if isMember();
+        allow create: if isMember() && request.resource.data.by == request.auth.uid;
+        allow update, delete: if isStaff() || (isMember() && resource.data.by == request.auth.uid);
+      }
+      match /spotImages/{id} {
+        allow read: if isMember();
+        allow create: if isMember() && request.resource.data.by == request.auth.uid;
+        allow update, delete: if isStaff() || (isMember() && resource.data.by == request.auth.uid);
       }
     }
   }
@@ -187,6 +254,9 @@ Any static host works.
 
 - **GitHub Pages:** create a **public** repo, upload `index.html` (and this README), then **Settings → Pages → Deploy from a branch → `main` / root → Save**. The site goes live at `https://<username>.github.io/<repo>/` in a minute or two.
 - **Netlify:** drag `index.html` onto [app.netlify.com/drop](https://app.netlify.com/drop).
+
+### 7b. Make yourself leader
+Open the site and join. Tap your name at the top → **Run this group? Enter the leader code** → type your `leaderCode` → **Unlock**. Your role changes to Leader. Make friends officers from **Group → Tasks → Crew**.
 
 ### 8. Check it
 Open the link. The pill at the top should say **Join group** and a join box pops up. Join with your name and the code, add something to the group list, then open the link on your phone, join there too, and check it shows up. Then post the link and the code in Discord.
@@ -217,6 +287,13 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 ---
 
 ## 🔄 Updating
+
+**Upgrading to the sign-in and roles version** (one-time):
+1. Paste the rules from step 5 and **Publish**.
+2. In **Firestore Database → Data**, open `boards/main/config/access` and **Add field** `leaderCode` (string) with a code only you know.
+3. Do step 4b to turn on Google sign-in and approve `alphadivine.github.io`.
+4. Replace `index.html` on GitHub.
+5. Do step 7b to make yourself leader. Until someone does, tasks, storage and the crew list are locked for everyone.
 
 **Upgrading?** Whenever the rules in step 5 change, paste them again and **Publish**, then replace `index.html`. The latest additions are sections for storage, claims, activity and spots, then tasks and the crew list. Nothing else changes and the existing group list carries over.
 
