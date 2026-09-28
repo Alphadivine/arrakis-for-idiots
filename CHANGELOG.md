@@ -11,6 +11,20 @@ What changed in each update of Arrakis for Idiots, newest first.
   - The Salvaged tier filter was always empty; it's now **No tier** (starter gear and untiered base pieces).
   - The House comparison and House gear no longer run off the side of small phones.
 
+## 2026-09-28 (night): Map
+- **Map tab** (it replaces Spots) with three views:
+  - **Our map:** the group's pins on Hagga Basin and the Deep Desert. Tap **+ Drop a pin** and tap the spot. Pins are colored by type, and Deep Desert pins get their grid square.
+  - **Spots list:** the old board. Any spot there can be put on the map or shown on the map.
+  - **Full map · th.gl:** the complete community map (Hagga Basin, Deep Desert, Arrakeen, Harko Village).
+- The leader and officers can set a **map picture** per area from a screenshot of the in-game map. Until then the map is a sand-colored grid.
+- **Rules:** new `mapImages` section. Paste `firestore.rules` into Firebase and Publish.
+
+## 2026-09-28 (evening): Activity cleanup, claim fix
+- **Remove activity lines:** the leader gets a × on each Recent activity line and a **Clear all activity** button.
+- **Fix:** finishing or deleting a gathering task now takes its "I'm on it" claim off the material. Before, the claim stayed behind and kept showing under "You're gathering". Leftover claims like that are cleaned up automatically the next time the app loads.
+- **Fix:** ticked-off materials no longer show under "You're gathering".
+- **Rules:** `groupLog` now allows the leader to delete. Paste `firestore.rules` into Firebase and Publish.
+
 ## 2026-09-28 (later): Sorting, back trail, "You" card
 - **Sort** the Craft list by type, A–Z, tier or station, and Gather by type, A–Z or tier.
 - **Back trail:** tapping into an ingredient shows "‹ Back to …" plus the last few items, across Craft and Gather.

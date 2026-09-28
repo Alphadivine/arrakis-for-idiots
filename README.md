@@ -45,8 +45,8 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3; checked against hotfixe
 - **Leader and officers**: whoever enters the leader code becomes leader and can make trusted friends officers from the Crew list. Leader and officers hand out and delete tasks, change base storage, manage the crew, remove group list items, clear lists, untick everything, and edit or delete anyone's spots. Members can still add to the group list, change amounts, claim with "I'm on it", tick gathered materials, tick their own tasks, and add and edit their own spots. The database rules enforce all of this.
 - **Tasks**: hand out jobs to anyone on the crew, including friends who only play on their phone and never open the site (add them by name). Assign gathering (amount filled in from what's still needed), crafting or building, or any free-form job, with an optional note and due date. Each person gets their own list with a **Copy list** button. Tick tasks off when they report back; finishing a gathering task ticks the material on the group checklist under their name. "Assign to…" on every checklist row does it in one step. The **Who** list shows app users and phone-only friends separately. Typing a name that already belongs to an app user suggests that person, and if a phone-only friend later joins the app under the same name, their tasks move to their account automatically.
 - **What can we craft now?**: from base storage, shows what's ready to craft, what's ready once you make the parts, and what's one material short (and by how much).
-- **Recent activity**: a feed of adds, claims, ticks, storage and new spots ("Mike is gathering Copper Ore").
-- **Spots board**: pin good ore, spice and salvage spots with a region, a note and up to 3 screenshots (drop, paste or pick). Screenshots are shrunk automatically.
+- **Recent activity**: a feed of adds, claims, ticks, storage and new spots ("Mike is gathering Copper Ore"). The leader can remove single lines or clear it all.
+- **Map tab**: *Our map* shows the group's pins on Hagga Basin and the Deep Desert. Tap **+ Drop a pin**, tap the spot, and add a name, note and up to 3 screenshots (drop, paste or pick; they're shrunk automatically). Pins are colored by type, and Deep Desert pins get their grid square (like E5). The leader or an officer can set a **map picture** for each area from a screenshot of the in-game map; until then it's a sand-colored grid. Update the Deep Desert picture after each weekly storm. *Spots list* is the old board with search and filters, and any spot there can be **put on the map** or **shown on the map**. *Full map · th.gl* is the complete community map from [The Hidden Gaming Lair](https://duneawakening.th.gl/) (Hagga Basin, Deep Desert, Arrakeen, Harko Village) with every resource node. It's their site, so it has their ads and none of our pins.
 - **Copy for Discord**: one tap copies any gathering checklist as text, ready to paste.
 - **First-visit guide**: a short how-to opens the first time someone visits, and the **?** button brings it back.
 - **Personal lists**: each player keeps their own list (**Mine**) for their own gear. The rest of the group can see it under **Players** but only its owner can change it.
@@ -213,11 +213,12 @@ service cloud.firestore {
         allow create, update: if isStaff() && goodName();
       }
 
-      // recent activity: members add entries as themselves; nobody edits history
+      // recent activity: members add entries as themselves; only the leader can remove lines
       match /groupLog/{id} {
         allow read: if isMember();
         allow create: if isMember() && request.resource.data.by == request.auth.uid;
-        allow update, delete: if false;
+        allow delete: if isLeader();
+        allow update: if false;
       }
 
       // weekly group backups: only the leader saves, reads and removes them
@@ -244,6 +245,13 @@ service cloud.firestore {
         allow read: if isMember();
         allow create: if isMember() && request.resource.data.by == request.auth.uid;
         allow update, delete: if isStaff() || (isMember() && resource.data.by == request.auth.uid);
+      }
+      // map pictures (a screenshot of the in-game map per area): leader and officers set them
+      match /mapImages/{area} {
+        allow read: if isMember();
+        allow write: if isStaff() && area in ['hagga', 'deep'] &&
+          request.resource.data.data is string && request.resource.data.data.size() < 1000000;
+        allow delete: if isStaff();
       }
       match /spotImages/{id} {
         allow read: if isMember();
@@ -340,6 +348,7 @@ When the game patches, the recipe data gets rebuilt into a new `index.html`. Fir
 - **Guide** info comes from the 1.5 patch notes, awakening.wiki and player guides. Cards marked **Check in game** came from a single source, or from sources that disagree. Some details are from before 1.5 and are labeled as such: guild size, Landsraad reset timing, and the names of the early quest steps.
 - **Base planner** figures come from the recipe data: power per structure, fuel from the generator notes (a Fuel Cell lasts 1 hour, a Spice-infused Fuel Cell 1 h 30 m) and windtrap output from its gather rate. Treat water per hour as an estimate. Wind turbine lubricant use isn't in the data.
 - **Optional vehicle modules** only exist in the data for some tiers. Where a newer one isn't listed, the builder offers the highest tier it has and says so.
+- **Map pictures** are stored in Firestore too, up to about 900 KB each (one per area). The map library, [Leaflet](https://leafletjs.com), loads from cdnjs the first time you open the map and is then kept for offline use.
 - **Screenshots** are stored in Firestore, about 100–300 KB each after shrinking. The free 1 GiB holds a few thousand.
 
 ---

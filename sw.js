@@ -1,9 +1,9 @@
 /* Arrakis for Idiots — offline helper. Keeps the app, its scripts and item pictures on the
    device so recipes, the Guide and your lists work without signal. Group data goes through
    Firebase's own offline cache and syncs when you're back online. */
-const VERSION = "20260928165539";
+const VERSION = "20260928174040";
 const APP = "afi-app-" + VERSION, LIB = "afi-lib-v1", IMG = "afi-img-v1";
-const LIB_HOSTS = ["www.gstatic.com", "fonts.googleapis.com", "fonts.gstatic.com"];
+const LIB_HOSTS = ["www.gstatic.com", "fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"];
 const IMG_HOSTS = ["media.awakening.wiki", "cdn-hosted.gaming.tools"];
 
 self.addEventListener("install", e => {

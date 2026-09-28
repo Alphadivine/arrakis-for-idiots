@@ -307,6 +307,9 @@ dialog h2{font:700 16px/1.2 var(--display);letter-spacing:.08em;text-transform:u
 .addstock input{min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);color:var(--ink);font:14px var(--sans)}
 .feed{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column}
 .feed li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.feed.canrm li{grid-template-columns:auto 1fr auto auto}
+.feed .x.sm{opacity:.45}
+.feed li:hover .x.sm,.feed .x.sm:focus{opacity:1}
 .feed time{font:500 11.5px var(--mono);color:var(--muted);white-space:nowrap}
 #grouplist.mylist{grid-template-columns:minmax(300px,440px) 1fr}
 /* spots */
@@ -542,6 +545,27 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
 .bkrest{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13.5px}
 .bkrest p{margin:0 0 6px}
 .bkrow{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.mapwrap .seg{margin:0}
+.maptools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 8px}
+.maptools select{font:500 14px var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px 8px}
+.seg.sm button{padding:6px 10px;font-size:13px}
+.lmap{height:calc(100vh - 290px);min-height:380px;border-radius:var(--r);border:1px solid var(--line);background:#C9A874;overflow:hidden;position:relative;z-index:0}
+#lmap.leaflet-container{background:var(--surface2)}
+#lmap .leaflet-control-zoom a{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.lmap.placing{outline:2px solid var(--spice);cursor:crosshair}
+.lmap.placing .leaflet-container,.lmap.placing.leaflet-container{cursor:crosshair}
+.mapload{padding:20px;color:#3a2a17}
+.mapmsg{margin:0 0 8px;font-weight:600;color:var(--spice)}
+iframe.thgl{width:100%;height:calc(100vh - 230px);min-height:420px;border:1px solid var(--line);border-radius:var(--r);background:#111}
+.pin{background:none;border:0}
+.pinpop{display:flex;flex-direction:column;gap:3px;min-width:150px;font:13px var(--sans)}
+.pinpop small{color:#6b5a48}
+.pinpop .btn{margin-top:6px;align-self:flex-start}
+.maploc{display:block;font-weight:400;font-size:13.5px;margin-top:4px}
+.maploc .lnk,.svmap .lnk{background:none;border:0;padding:0;color:var(--ibad);font-weight:600;cursor:pointer}
+.muted{color:var(--muted)}
+.svmap{margin:6px 0;font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+@media (max-width:760px){.lmap{height:calc(100vh - 290px)}iframe.thgl{height:calc(100vh - 260px)}}
 .bkrow small{display:block;color:var(--muted);font-size:12px}
 #bkWrap h3.sub{margin:14px 0 2px}
 .entry.ro{grid-template-columns:4px 26px 1fr auto auto}
@@ -723,7 +747,7 @@ img[data-zoom]{cursor:zoom-in}
       <button role="tab" data-tab="gather" id="tab-gather"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l8.5-8.5 M13.5 3.5c3 0 6 2 7 5-2-1-5-1-7 1l-3-3c1-2 2-3 3-3z"/></svg><span class="tl">Gather</span></button>
       <button role="tab" data-tab="list" id="tab-list"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11 M9 12h11 M9 18h11 M4.5 6h.01 M4.5 12h.01 M4.5 18h.01"/></svg><span class="tl">Mine</span><span class="badge num" id="listBadge">0</span></button>
       <button role="tab" data-tab="group" id="tab-group"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20c0-3 3-5 6-5s6 2 6 5 M16.5 10.5a2.5 2.5 0 1 0 0-5 M18 14.5c2 .6 3 2.2 3 4.5"/></svg><span class="tl">Group</span><span class="badge num" id="groupBadge">0</span><span class="newdot" id="groupDot" hidden></span></button>
-      <button role="tab" data-tab="spots" id="tab-spots"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z M12 12.3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg><span class="tl">Spots</span></button>
+      <button role="tab" data-tab="spots" id="tab-spots"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z M12 12.3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg><span class="tl">Map</span></button>
       <button role="tab" data-tab="survive" id="tab-survive"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z M4 20.5V5.5 M8.5 7.5h7"/></svg><span class="tl">Guide</span></button>
     </nav>
   </header>
@@ -1585,7 +1609,7 @@ function youCardHTML(rows) {
   if (!G.me) return "";
   const tasks = myOpenTasks().slice().sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999"));
   const need = new Map(rows);
-  const claims = Object.values(G.claims).filter(c => canon(c.for || "m:" + c.by) === myKey()).sort((a, b) => a.n.localeCompare(b.n));
+  const claims = Object.values(G.claims).filter(c => canon(c.for || "m:" + c.by) === myKey() && !G.got[c.n] && need.get(c.n) !== 0).sort((a, b) => a.n.localeCompare(b.n));
   const R = runState(), storm = nextStorm(R.region), until = storm - Date.now();
   const listN = S.example ? 0 : S.list.length;
   return `<div class="card youcard">
@@ -1594,7 +1618,7 @@ function youCardHTML(rows) {
       <div class="yb"><small>Your tasks</small>
         ${tasks.length ? `<b class="num">${tasks.length} open</b><ul class="plain">${tasks.slice(0, 3).map(t => `<li>${esc(taskLabel(t))} ${dueHTML(t.due)}</li>`).join("")}</ul><button class="lnk" data-yougv="tasks">${tasks.length > 3 ? `See all ${tasks.length}` : "Open tasks"} ›</button>` : `<b>Nothing assigned</b><p>When the leader or an officer gives you a task it shows up here.</p>`}</div>
       <div class="yb"><small>You're gathering</small>
-        ${claims.length ? `<ul class="plain">${claims.slice(0, 4).map(c => { const q = need.get(c.n); return `<li><button class="lnk" data-go="${esc(c.n)}">${esc(c.n)}</button> ${G.got[c.n] || q === 0 ? `<span class="okt">done ✓</span>` : q ? `<span class="num">${fmtQplain(c.n, q)} to go</span>` : ""}</li>`; }).join("")}</ul>${claims.length > 4 ? `<small>+${claims.length - 4} more below</small>` : ""}` : `<b>Nothing claimed</b><p>Tap “I'm on it” on a material below so nobody doubles up.</p>`}</div>
+        ${claims.length ? `<ul class="plain">${claims.slice(0, 4).map(c => { const q = need.get(c.n); return `<li><button class="lnk" data-go="${esc(c.n)}">${esc(c.n)}</button> ${q ? `<span class="num">${fmtQplain(c.n, q)} to go</span>` : ""}</li>`; }).join("")}</ul>${claims.length > 4 ? `<small>+${claims.length - 4} more below</small>` : ""}` : `<b>Nothing claimed</b><p>Tap “I'm on it” on a material below so nobody doubles up.</p>`}</div>
       <div class="yb ${until < 6 * 3600000 ? "soon" : ""}"><small>Coriolis storm · ${esc(R.region)}</small>
         <b class="num">in ${inHM(until)}</b><p>${esc(storm.toLocaleString([], { weekday: "long", hour: "numeric", minute: "2-digit" }))}. Wipes the Deep Desert.</p><button class="lnk" data-youtab="run">Plan a run ›</button></div>
     </div></div>`;
@@ -1785,12 +1809,15 @@ function renderGroup() {
     </div>
     <div class="card">
       <h2>Recent activity</h2>
-      ${G.log.length ? `<ul class="feed">${G.log.slice(0, 15).map(x => `<li class="${x.by !== G.uid && x.at > seenBefore ? "new" : ""}">${dot(x.by, nameOf(x.by))}<span><b>${esc(nameOf(x.by))}</b> ${esc((LOG_TEXT[x.k] || (() => ""))(x))}</span><time>${timeAgo(x.at)}</time></li>`).join("")}</ul>` : `<p class="lede">Nothing yet. Adds, ticks, claims, storage and new spots show up here.</p>`}
+      ${G.log.length ? `<ul class="feed ${isLeader() ? "canrm" : ""}">${G.log.slice(0, 15).map(x => `<li class="${x.by !== G.uid && x.at > seenBefore ? "new" : ""}">${dot(x.by, nameOf(x.by))}<span><b>${esc(nameOf(x.by))}</b> ${esc((LOG_TEXT[x.k] || (() => ""))(x))}</span><time>${timeAgo(x.at)}</time>${isLeader() ? `<button class="x sm" data-logrm="${esc(x.id)}" aria-label="Remove this line" title="Remove this line">×</button>` : ""}</li>`).join("")}</ul>
+        ${isLeader() ? `<div class="toolbar"><button class="btn ghost small" id="logClear">Clear all activity</button></div>` : ""}` : `<p class="lede">Nothing yet. Adds, ticks, claims, storage and new spots show up here.</p>`}
     </div>
   </div>`;
   const run = p => p.catch(e => toast(errText(e)));
   wireGroupSeg(V);
   V.querySelectorAll("[data-go]").forEach(b => b.onclick = () => select(b.dataset.go));
+  V.querySelectorAll("[data-logrm]").forEach(b => b.onclick = () => run(Group.col("groupLog").doc(b.dataset.logrm).delete()));
+  armConfirm($("logClear"), "Tap again to clear everyone's activity", () => run(Group.clearLog().then(n => toast(`Cleared ${n} activity ${n === 1 ? "line" : "lines"}.`))));
   V.querySelectorAll("[data-youtab]").forEach(b => b.onclick = () => setTab(b.dataset.youtab));
   V.querySelectorAll("[data-yougv]").forEach(b => b.onclick = () => { S.gview = b.dataset.yougv; save(); renderGroup(); });
   V.querySelectorAll("[data-dq]").forEach(b => b.onclick = () => { const x = G.items[+b.dataset.dq]; run(Group.setQty(x.id, Math.max(1, x.q + +b.dataset.d))); });
@@ -1885,12 +1912,140 @@ function spotCard(sp) {
       <span class="by">${dot(sp.by, nameOf(sp.by))}${esc(nameOf(sp.by))} · ${timeAgo(sp.at)}</span></span>
   </button>`;
 }
-function renderSpots() {
+/* ---------- map: our pins + the full th.gl map ---------- */
+const MAP_AREAS = { hagga: "Hagga Basin", deep: "Deep Desert" };
+const THGL = { hagga: ["Hagga Basin", "Hagga%20Basin"], deep: ["The Deep Desert", "The%20Deep%20Desert"], arrakeen: ["Arrakeen", "Arrakeen"], harko: ["Harko Village", "Harko%20Village"] };
+const KIND_COLOR = { Ore: "#C8742F", "Stone & Minerals": "#8E9AAF", Organic: "#6BAA75", Spice: "#E0662A", Salvage: "#A38B6D", Water: "#4F9BD9", "Looted Parts": "#B07CC6", "Base site": "#D9B44A", Danger: "#D9534F", Other: "#9A8F80" };
+const LEAF = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/";
+let leafletP = null, lmap = null, lmapArea = null, lmapLayers = null, placing = null;
+function loadLeaflet() {
+  if (window.L) return Promise.resolve();
+  if (leafletP) return leafletP;
+  leafletP = new Promise((res, rej) => {
+    const css = document.createElement("link"); css.rel = "stylesheet"; css.href = LEAF + "leaflet.min.css"; document.head.appendChild(css);
+    const s = document.createElement("script"); s.src = LEAF + "leaflet.min.js"; s.onload = res; s.onerror = () => { leafletP = null; rej(new Error("map library")); }; document.head.appendChild(s);
+  });
+  return leafletP;
+}
+/* the grid drawn when nobody has set a map picture yet; the Deep Desert uses its in-game A–I / 1–9 grid */
+function gridSVG(area) {
+  const deep = area === "deep", n = 9, s = 1000 / n;
+  let g = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><rect width="1000" height="1000" fill="#C9A874"/>`;
+  g += `<g fill="#B8955F" opacity=".55">` + Array.from({ length: 14 }, (_, i) => `<ellipse cx="${(i * 173) % 1000}" cy="${(i * 311) % 1000}" rx="${90 + (i * 37) % 120}" ry="${30 + (i * 13) % 40}" transform="rotate(${-20 + (i * 17) % 40} ${(i * 173) % 1000} ${(i * 311) % 1000})"/>`).join("") + `</g>`;
+  for (let i = 1; i < n; i++) g += `<line x1="${i * s}" y1="0" x2="${i * s}" y2="1000" stroke="#7A5A33" stroke-opacity=".35" stroke-width="2"/><line x1="0" y1="${i * s}" x2="1000" y2="${i * s}" stroke="#7A5A33" stroke-opacity=".35" stroke-width="2"/>`;
+  if (deep) for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) g += `<text x="${c * s + 10}" y="${r * s + 30}" font-family="monospace" font-size="22" fill="#5A3F1F" fill-opacity=".7">${"IHGFEDCBA"[r]}${c + 1}</text>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(g + `</svg>`);
+}
+const gridCell = (x, y) => "IHGFEDCBA"[Math.min(8, Math.floor((1000 - y) / 1000 * 9))] + (Math.min(8, Math.floor(x / 1000 * 9)) + 1);
+function mapPicture(area) { const m = G.maps[area]; return m && m.data ? m.data : gridSVG(area); }
+function pinIcon(sp) {
+  const c = KIND_COLOR[sp.kind] || KIND_COLOR.Other;
+  return L.divIcon({ className: "pin", iconSize: [28, 36], iconAnchor: [14, 34], popupAnchor: [0, -30],
+    html: `<svg viewBox="0 0 28 36" width="28" height="36" aria-hidden="true"><path d="M14 35s12-11.3 12-20A12 12 0 0 0 2 15c0 8.7 12 20 12 20z" fill="${c}" stroke="#1F1914" stroke-width="1.6"/><circle cx="14" cy="14" r="5" fill="#fff" fill-opacity=".9"/></svg>` });
+}
+function mapSeg(active) {
+  return `<div class="seg" role="group" aria-label="Map view"><button data-sview="map" aria-pressed="${active === "map"}">Our map</button><button data-sview="list" aria-pressed="${active === "list"}">Spots list</button><button data-sview="thgl" aria-pressed="${active === "thgl"}">Full map · th.gl</button></div>`;
+}
+function wireMapSeg(V) { V.querySelectorAll("[data-sview]").forEach(b => b.onclick = () => { S.sview = b.dataset.sview; placing = null; save(); renderSpots(); }); }
+function renderThgl(V) {
+  const a = THGL[S.tharea] ? S.tharea : "hagga";
+  V.innerHTML = `<div class="mapwrap">${mapSeg("thgl")}
+    <div class="maptools"><select id="thArea" aria-label="Map area">${Object.entries(THGL).map(([k, [l]]) => `<option value="${k}" ${k === a ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+      <a class="btn ghost small" href="https://duneawakening.th.gl/maps/${THGL[a][1]}" target="_blank" rel="noopener">Open in a new tab ↗</a></div>
+    <iframe class="thgl" src="https://duneawakening.th.gl/maps/${THGL[a][1]}" title="${esc(THGL[a][0])} interactive map by The Hidden Gaming Lair" loading="lazy" allow="fullscreen"></iframe>
+    <p class="foot">Interactive map by <a href="https://duneawakening.th.gl/" target="_blank" rel="noopener">The Hidden Gaming Lair (th.gl)</a>. It's their site, so it shows their own ads and none of our group's pins.</p></div>`;
+  wireMapSeg(V);
+  $("thArea").onchange = e => { S.tharea = e.target.value; save(); renderThgl(V); };
+}
+let focusSpot = null;
+function mapFootHTML(area, pins, pic) {
+  const unplaced = G.spots.filter(s => !s.map).length;
+  return `${pins.length} pin${pins.length === 1 ? "" : "s"} on this map${unplaced ? ` · ${unplaced} spot${unplaced === 1 ? " isn't" : "s aren't"} on a map yet (open one in Spots list, then Put on the map)` : ""}.
+      ${pic ? `Map picture set by ${esc(nameOf(pic.by))}.` : isStaff() ? "Tip: screenshot the in-game map, crop it to just the map, and use Set map picture." : "The leader or an officer can add a screenshot of the in-game map here."}
+      ${area === "deep" ? " The Deep Desert changes every week, so update its picture after the storm." : ""}`;
+}
+function renderOurMap(V, soft) {
+  const area = MAP_AREAS[S.marea] ? S.marea : "hagga";
+  const pins = G.spots.filter(s => s.map && s.map.a === area && spotMatches(s));
+  const kinds = SPOT_KINDS.filter(k => G.spots.some(s => s.kind === k));
+  const pic = G.maps[area];
+  const key = [area, pic ? pic.at : 0, placing ? placing.id || "new" : "", spotKind, isStaff()].join("|");
+  const chipsHTML = () => kinds.length > 1 ? `<div class="chips">${["All", ...kinds].map(k => chip(k, spotKind === k, `data-kind="${esc(k)}"`, k === "All" ? "" : KIND_COLOR[k] || KIND_COLOR.Other)).join("")}</div>` : "";
+  const wireChips = () => V.querySelectorAll("[data-kind]").forEach(b => b.onclick = () => { spotKind = b.dataset.kind; renderSpots(); });
+  if (soft && lmap && $("lmap") && V.dataset.mk === key) { addPins(area, pins); $("mapFoot").innerHTML = mapFootHTML(area, pins, pic); $("mapChips").innerHTML = chipsHTML(); wireChips(); return; }
+  V.dataset.mk = key;
+  V.innerHTML = `<div class="mapwrap">${mapSeg("map")}
+    <div class="maptools">
+      <div class="seg sm" role="group" aria-label="Area">${Object.entries(MAP_AREAS).map(([k, l]) => `<button data-marea="${k}" aria-pressed="${k === area}">${esc(l)}</button>`).join("")}</div>
+      <button class="btn small" id="pinAdd">${placing ? "Cancel" : "+ Drop a pin"}</button>
+      ${isStaff() ? `<button class="btn ghost small" id="mapPic">${pic ? "Change map picture" : "Set map picture"}</button><input type="file" id="mapPicFile" accept="image/*" hidden>` : ""}
+    </div>
+    <div id="mapChips">${chipsHTML()}</div>
+    ${placing ? `<p class="mapmsg">Tap the map where ${placing.id ? `“${esc((G.spots.find(s => s.id === placing.id) || {}).title || "the spot")}” is` : "the spot is"}.</p>` : ""}
+    <div id="lmap" class="lmap ${placing ? "placing" : ""}" role="application" aria-label="${esc(MAP_AREAS[area])} map with the group's spots"><p class="mapload">Loading the map…</p></div>
+    <p class="foot" id="mapFoot">${mapFootHTML(area, pins, pic)}</p>
+  </div>`;
+  wireMapSeg(V);
+  V.querySelectorAll("[data-marea]").forEach(b => b.onclick = () => { S.marea = b.dataset.marea; save(); renderSpots(); });
+  wireChips();
+  $("pinAdd").onclick = () => { placing = placing ? null : { id: null }; renderSpots(); };
+  const mp = $("mapPic");
+  if (mp) { mp.onclick = () => $("mapPicFile").click(); $("mapPicFile").onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    mp.disabled = true; mp.textContent = "Uploading…";
+    try { const data = await shrink(f, 2000, 900000); await Group.col("mapImages").doc(area).set({ data, by: G.uid, at: now() }); toast(`${MAP_AREAS[area]} map picture saved for everyone.`); }
+    catch (ex) { toast(ex && ex.code === "permission-denied" ? "Firebase didn't accept that. Paste the latest rules from the setup guide and Publish." : "Couldn't use that picture."); }
+    mp.disabled = false; renderSpots();
+  }; }
+  loadLeaflet().then(() => drawLeaflet(area, pins)).catch(() => { const el = $("lmap"); if (el) el.innerHTML = `<p class="mapload">Couldn't load the map. Check your connection; the Spots list still works.</p>`; });
+}
+function drawLeaflet(area, pins) {
+  const el = $("lmap"); if (!el || !window.L) return;
+  if (lmap) { lmap.remove(); lmap = null; }
+  el.innerHTML = "";
+  const B = [[0, 0], [1000, 1000]];
+  lmap = L.map(el, { crs: L.CRS.Simple, minZoom: -2, maxZoom: 3, zoomSnap: 0.25, attributionControl: false, maxBounds: [[-200, -200], [1200, 1200]] });
+  L.imageOverlay(mapPicture(area), B).addTo(lmap);
+  lmap.fitBounds(B);
+  lmapArea = area;
+  lmapLayers = L.layerGroup().addTo(lmap);
+  addPins(area, pins);
+  lmap.on("popupopen", e => { const b = e.popup.getElement().querySelector("[data-openspot]"); if (b) b.onclick = () => openSpot(b.dataset.openspot); });
+  lmap.on("click", async e => {
+    if (!placing) return;
+    const x = Math.round(Math.max(0, Math.min(1000, e.latlng.lng))), y = Math.round(Math.max(0, Math.min(1000, e.latlng.lat)));
+    const loc = { a: area, x, y }, p = placing; placing = null;
+    if (p.id) { try { await Group.col("spots").doc(p.id).update({ map: loc }); toast("Pinned on the map."); } catch (ex) { toast(errText(ex)); } renderSpots(); }
+    else { renderSpots(); editSpot(null, loc); }
+  });
+  setTimeout(() => { if (!lmap) return; lmap.invalidateSize(); if (focusSpot && MARKERS[focusSpot]) { const mk = MARKERS[focusSpot]; lmap.setView(mk.getLatLng(), 1); mk.openPopup(); } focusSpot = null; }, 80);
+}
+let MARKERS = {};
+function addPins(area, pins) {
+  if (!lmapLayers) return;
+  const open = Object.entries(MARKERS).find(([, mk]) => mk.isPopupOpen && mk.isPopupOpen());
+  lmapLayers.clearLayers(); MARKERS = {};
+  for (const sp of pins) {
+    const mk = L.marker([sp.map.y, sp.map.x], { icon: pinIcon(sp), title: sp.title, keyboard: true }).addTo(lmapLayers);
+    mk.bindPopup(`<div class="pinpop"><b>${esc(sp.title)}</b><small>${esc(sp.kind)}${sp.region ? " · " + esc(sp.region) : ""}${area === "deep" ? " · grid " + gridCell(sp.map.x, sp.map.y) : ""}</small>${sp.n ? `<span>${esc(sp.n)}</span>` : ""}<button class="btn small" data-openspot="${esc(sp.id)}">Open</button></div>`);
+    MARKERS[sp.id] = mk;
+  }
+  if (open && MARKERS[open[0]]) MARKERS[open[0]].openPopup();
+}
+function showOnMap(sp) { focusSpot = sp.id; S.sview = "map"; S.marea = sp.map.a; save(); $("spotDlg").close(); setTab("spots"); }
+function startPlacing(id, area) { placing = { id }; S.sview = "map"; if (area) S.marea = area; save(); $("spotDlg").close(); setTab("spots"); }
+
+function renderSpots(soft) {
   const V = $("spots");
-  if (groupGate(V, "the spots board")) return;
+  const sv = ["map", "list", "thgl"].includes(S.sview) ? S.sview : "map";
+  if (sv !== "map" && lmap) { lmap.remove(); lmap = null; lmapLayers = null; }
+  if (sv !== "map") delete V.dataset.mk;
+  if (sv === "thgl") { if (soft && V.querySelector("iframe.thgl")) return; return renderThgl(V); }
+  if (groupGate(V, "the spots board")) { delete V.dataset.mk; if (lmap) { lmap.remove(); lmap = null; } V.insertAdjacentHTML("afterbegin", `<div class="mapwrap" style="margin-bottom:12px">${mapSeg(sv)}</div>`); wireMapSeg(V); return; }
+  if (sv === "map") return renderOurMap(V, soft);
   const list = G.spots.filter(spotMatches);
   const kinds = SPOT_KINDS.filter(k => G.spots.some(s => s.kind === k));
-  V.innerHTML = `
+  V.innerHTML = `<div class="mapwrap" style="margin-bottom:12px">${mapSeg("list")}</div>
     <div class="spotbar">
       <label class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         <input id="spotQ" type="search" placeholder="Search spots" value="${esc(spotQ)}" aria-label="Search spots"></label>
@@ -1900,6 +2055,7 @@ function renderSpots() {
     <p class="count">${G.spots.length ? `${list.length} of ${G.spots.length} spots` : ""}</p>
     ${list.length ? `<div class="spots">${list.map(spotCard).join("")}</div>`
       : `<div class="card" style="max-width:560px"><h2>${G.spots.length ? "No spots match" : "No spots yet"}</h2><p class="lede">${G.spots.length ? "Try another search or type." : "Found a good iron outcrop, a spice field that blows often, or a wreck full of salvage? Add it with a note and a screenshot so the group can find it."}</p></div>`}`;
+  wireMapSeg(V);
   V.querySelectorAll("[data-kind]").forEach(b => b.onclick = () => { spotKind = b.dataset.kind; renderSpots(); });
   V.querySelectorAll("[data-spot]").forEach(b => b.onclick = () => openSpot(b.dataset.spot));
   $("spotAdd").onclick = () => editSpot(null);
@@ -1927,9 +2083,9 @@ async function shrink(file, max, limit) {
 }
 
 let spotDraft = null;
-function editSpot(id) {
+function editSpot(id, loc) {
   const sp = id ? G.spots.find(s => s.id === id) : null;
-  spotDraft = { id, imgs: sp ? sp.imgs.map(x => ({ id: x })) : [], removed: [] };
+  spotDraft = { id, imgs: sp ? sp.imgs.map(x => ({ id: x })) : [], removed: [], map: loc || (sp && sp.map) || null };
   const d = $("spotDlg");
   d.innerHTML = `<form id="spotForm" method="dialog">
     <h2>${sp ? "Edit spot" : "Add a spot"}</h2>
@@ -1939,6 +2095,7 @@ function editSpot(id) {
       <label class="fld" for="spKind">Type<select id="spKind">${SPOT_KINDS.map(k => `<option ${sp?.kind === k ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label>
     </div>
     <label class="fld" for="spRegion">Region<input id="spRegion" list="regionNames" maxlength="60" placeholder="e.g. Vermilius Gap, grid F7" value="${esc(sp?.region || "")}"></label>
+    <div class="fld">On the map <span class="maploc" id="spLoc"></span></div>
     <label class="fld" for="spNote">Note<textarea id="spNote" rows="3" maxlength="600" placeholder="How to get there, what to watch out for, when the spice blows...">${esc(sp?.note || "")}</textarea></label>
     <div class="fld">Screenshots (up to 3)
       <div class="drop" id="spDrop" tabindex="0">Drop, paste or <label class="lnk" for="spFile">choose images</label><input id="spFile" type="file" accept="image/*" multiple hidden></div>
@@ -1961,6 +2118,14 @@ function editSpot(id) {
     }
     drawShots();
   };
+  const drawLoc = () => {
+    const m = spotDraft.map;
+    $("spLoc").innerHTML = m ? `📍 ${esc(MAP_AREAS[m.a] || "Map")}${m.a === "deep" ? " · grid " + gridCell(m.x, m.y) : ""} <button type="button" class="lnk" id="spUnpin">Take it off the map</button>`
+      : `<span class="muted">Not on the map.${sp ? ` <button type="button" class="lnk" id="spPin">Put it on the map</button>` : " You can pin it after saving, or start from the map with + Drop a pin."}</span>`;
+    const u = $("spUnpin"); if (u) u.onclick = () => { spotDraft.map = null; drawLoc(); };
+    const p = $("spPin"); if (p) p.onclick = () => startPlacing(id);
+  };
+  drawLoc();
   drawShots();
   $("spFile").onchange = e => addFiles([...e.target.files]);
   const drop = $("spDrop");
@@ -1978,7 +2143,7 @@ function editSpot(id) {
     const mat = matTyped ? [...RAWS.keys(), ...ITEMS.keys()].find(k => k.toLowerCase() === matTyped.toLowerCase()) || "" : "";
     $("spSave").disabled = true;
     try {
-      await Group.saveSpot(spotDraft, { title, n: mat, kind: $("spKind").value, region: $("spRegion").value.trim(), note: $("spNote").value.trim() });
+      await Group.saveSpot(spotDraft, { title, n: mat, kind: $("spKind").value, region: $("spRegion").value.trim() || (spotDraft.map && spotDraft.map.a === "deep" ? "Deep Desert " + gridCell(spotDraft.map.x, spotDraft.map.y) : ""), note: $("spNote").value.trim(), map: spotDraft.map || null });
       d.close(); toast(sp ? "Spot saved" : "Spot added");
     } catch (ex) { $("spErr").textContent = ex && ex.code === "permission-denied" ? "The group didn't accept that. Try rejoining." : "Couldn't save. Check your connection and try again."; $("spErr").hidden = false; }
     $("spSave").disabled = false;
@@ -1993,6 +2158,7 @@ async function openSpot(id) {
     <div class="cardhd"><h2>${esc(sp.title)}</h2><span class="hdbtns">${linkBtn(`data-slink="${esc(sp.id)}"`, sp.title)}<button class="x" id="svClose" aria-label="Close">×</button></span></div>
     <p class="meta2">${esc(sp.kind)}${sp.region ? " · " + esc(sp.region) : ""} · added by ${esc(nameOf(sp.by))}, ${timeAgo(sp.at)}</p>
     ${sp.n ? `<p><button class="pill" data-go="${esc(sp.n)}">${iconHTML(sp.n, 20)} ${esc(sp.n)}</button></p>` : ""}
+    <p class="svmap">${sp.map ? `📍 On the ${esc(MAP_AREAS[sp.map.a] || "")} map${sp.map.a === "deep" ? " · grid " + gridCell(sp.map.x, sp.map.y) : ""} <button class="btn ghost small" id="svShow">Show on the map</button>` : sp.by === G.uid || isStaff() ? `<button class="btn ghost small" id="svPin">📍 Put on the map</button>` : ""}</p>
     ${sp.note ? `<p class="note">${esc(sp.note)}</p>` : ""}
     <div class="gallery" id="svGallery">${(sp.imgs || []).map(() => `<span class="ph">Loading screenshot…</span>`).join("")}</div>
     ${sp.by === G.uid || isStaff() ? `<div class="toolbar"><button class="btn ghost small" id="svEdit">Edit</button><button class="btn ghost small" id="svDel">Delete spot</button></div>` : ""}
@@ -2000,6 +2166,8 @@ async function openSpot(id) {
   $("svClose").onclick = () => d.close();
   d.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { d.close(); select(b.dataset.go); });
   if ($("svEdit")) $("svEdit").onclick = () => editSpot(id);
+  if ($("svShow")) $("svShow").onclick = () => showOnMap(sp);
+  if ($("svPin")) $("svPin").onclick = () => startPlacing(id);
   if ($("svDel")) armConfirm($("svDel"), "Tap again to delete for everyone", async () => { try { await Group.deleteSpot(sp); d.close(); toast("Spot deleted"); } catch (e) { toast(errText(e)); } });
   d.showModal();
   G.spotImgCache = G.spotImgCache || {};
@@ -2012,7 +2180,7 @@ async function openSpot(id) {
 }
 
 /* ---------- group sync (Firebase) ---------- */
-const G = { state: (CONFIG.FIREBASE.apiKey && CONFIG.FIREBASE.projectId) ? "connecting" : "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [], roles: {} };
+const G = { state: (CONFIG.FIREBASE.apiKey && CONFIG.FIREBASE.projectId) ? "connecting" : "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [], roles: {}, maps: {} };
 /* roles: the leader (whoever entered the leader code) and officers they pick. Everyone else is a member. */
 const roleOf = uid => (G.roles[uid] && G.roles[uid].role) || "member";
 const isStaff = (uid = G.uid) => ["leader", "officer"].includes(roleOf(uid));
@@ -2038,7 +2206,7 @@ function rerender() {
   rrT = setTimeout(() => {
     updateBadge();
     if (S.tab === "group") renderGroup();
-    else if (S.tab === "spots") { if (!document.activeElement || document.activeElement.id !== "spotQ") renderSpots(); }
+    else if (S.tab === "spots") { if (!document.activeElement || document.activeElement.id !== "spotQ") renderSpots(true); }
     else if (S.tab === "craft" || S.tab === "gather") renderBrowse();
   }, 30);
 }
@@ -2055,13 +2223,22 @@ const Group = {
   async setTaskDone(t, done) {
     await Group.col("groupTasks").doc(t.id).update({ done, doneBy: G.uid, doneAt: now() });
     if (t.kind === "gather" && t.n && RAWS.has(t.n)) {
-      if (done) await Group.tick(t.n, true, t.who);
-      else if (G.got[t.n] && G.got[t.n].for === t.who) await Group.tick(t.n, false);
+      if (done) { await Group.tick(t.n, true, t.who); await releaseTaskClaim(t); }
+      else { if (G.got[t.n] && G.got[t.n].for === t.who) await Group.tick(t.n, false); if (!G.claims[t.n]) await Group.claim(t.n, true, t.who).catch(() => {}); }
     }
     if (done) Group.log("done", taskLabel(t), 0, crewName(t.who));
   },
-  deleteTask: id => Group.col("groupTasks").doc(id).delete(),
-  async clearDone(who) { const b = fb.db.batch(); G.tasks.filter(t => t.done && (!who || t.who === who)).forEach(t => b.delete(Group.col("groupTasks").doc(t.id))); return b.commit(); },
+  async clearLog() {
+    let n = 0;
+    for (;;) {
+      const snap = await Group.col("groupLog").limit(400).get({ source: "server" });
+      if (!snap.size) return n;
+      const b = fb.db.batch(); snap.forEach(d => b.delete(d.ref || Group.col("groupLog").doc(d.id))); await b.commit(); n += snap.size;
+      if (snap.size < 400) return n;
+    }
+  },
+  async deleteTask(id) { const t = G.tasks.find(x => x.id === id); await Group.col("groupTasks").doc(id).delete(); if (t) await releaseTaskClaim(t, id); },
+  async clearDone(who) { const gone = G.tasks.filter(t => t.done && (!who || t.who === who)); const b = fb.db.batch(); gone.forEach(t => b.delete(Group.col("groupTasks").doc(t.id))); await b.commit(); for (const t of gone) await releaseTaskClaim(t, t.id); },
   async addCrew(name) { const ref = await Group.col("groupCrew").add({ name: name.slice(0, 24), by: G.uid, at: now() }); return "g:" + ref.id; },
   removeCrew: id => Group.col("groupCrew").doc(id).delete(),
   setOfficer: (uid, on) => on ? Group.col("roles").doc(uid).set({ role: "officer", by: G.uid, at: now() }) : Group.col("roles").doc(uid).delete(),
@@ -2136,11 +2313,30 @@ function pushMine() {
 }
 
 const ms = x => x && x.toMillis ? x.toMillis() : Date.now();
+/* a gather task puts an "I'm on it" claim on its material for that person; once no open task needs it, take it off */
+const openGatherFor = (who, n, skip) => G.tasks.some(t => t.id !== skip && !t.done && t.kind === "gather" && t.n === n && canon(t.who) === canon(who));
+async function releaseTaskClaim(t, skip) {
+  if (t.kind !== "gather" || !t.n) return;
+  const c = G.claims[t.n];
+  if (c && c.for && canon(c.for) === canon(t.who) && !openGatherFor(t.who, t.n, skip || t.id)) await Group.claim(t.n, false).catch(() => {});
+}
+const LOADED = new Set(); let tidyT;
+function tidyClaims() {
+  clearTimeout(tidyT);
+  tidyT = setTimeout(() => {
+    if (!LOADED.has("groupTasks") || !LOADED.has("groupClaims") || G.state !== "live") return;
+    for (const c of Object.values(G.claims)) {
+      if (!c.for || openGatherFor(c.for, c.n)) continue;          // "I'm on it" for yourself, or still needed by a task
+      if (isStaff() || canon(c.for) === myKey()) Group.claim(c.n, false).catch(() => {});
+    }
+  }, 1500);
+}
 function stopGroup() { unsubs.forEach(u => u()); unsubs = []; }
 function startGroup() {
   stopGroup();
   const fail = () => setStatus("offline");
-  const watch = (name, fn) => unsubs.push(fb.board.collection(name).onSnapshot(s => { fn(s); rerender(); }, fail));
+  LOADED.clear();
+  const watch = (name, fn) => unsubs.push(fb.board.collection(name).onSnapshot(s => { fn(s); if (!(s.metadata && s.metadata.fromCache)) LOADED.add(name); if (name === "groupTasks" || name === "groupClaims") tidyClaims(); rerender(); }, fail));
   watch("members", s => { G.members = {}; s.forEach(d => { G.members[d.id] = { name: d.data().name }; }); });
   watch("groupItems", s => {
     G.items = []; s.forEach(d => { const x = d.data(); G.items.push({ id: d.id, n: x.n, q: x.q, by: x.by, at: ms(x.at) }); });
@@ -2160,13 +2356,14 @@ function startGroup() {
     }
   });
   watch("groupStock", s => { G.stock = {}; s.forEach(d => { const x = d.data(); if (ITEMS.has(x.n) || RAWS.has(x.n)) G.stock[x.n] = { n: x.n, q: x.q, by: x.by }; }); });
+  watch("mapImages", s => { G.maps = {}; s.forEach(d => { const x = d.data(); if (x.data) G.maps[d.id] = { data: x.data, by: x.by, at: ms(x.at) }; }); });
   watch("players", s => { G.players = {}; s.forEach(d => { G.players[d.id] = d.data(); }); });
   watch("spots", s => {
-    G.spots = []; s.forEach(d => { const x = d.data(); G.spots.push({ id: d.id, title: x.title || "Spot", n: x.n || "", kind: x.kind || "Other", region: x.region || "", note: x.note || "", thumb: x.thumb || "", imgs: x.imgs || [], by: x.by, at: ms(x.at) }); });
+    G.spots = []; s.forEach(d => { const x = d.data(); G.spots.push({ id: d.id, title: x.title || "Spot", n: x.n || "", kind: x.kind || "Other", region: x.region || "", note: x.note || "", thumb: x.thumb || "", imgs: x.imgs || [], by: x.by, at: ms(x.at), map: x.map && typeof x.map.x === "number" && MAP_AREAS[x.map.a] ? { a: x.map.a, x: x.map.x, y: x.map.y } : null }); });
     G.spots.sort((a, b) => b.at - a.at);
   });
   unsubs.push(fb.board.collection("groupLog").orderBy("at", "desc").limit(30).onSnapshot(s => {
-    G.log = []; s.forEach(d => { const x = d.data(); G.log.push({ k: x.k, n: x.n, q: x.q, w: x.w || "", by: x.by, at: ms(x.at) }); });
+    G.log = []; s.forEach(d => { const x = d.data(); G.log.push({ id: d.id, k: x.k, n: x.n, q: x.q, w: x.w || "", by: x.by, at: ms(x.at) }); });
     G.log.sort((a, b) => b.at - a.at); rerender();
   }, fail));
 }
@@ -3043,7 +3240,7 @@ function guideHTML() {
     ${group ? `<li><b>Split the work in Group.</b> Tap <i>I'm on it</i> on a material so nobody farms the same thing. Type what's already <i>In storage</i> and every total shrinks to what's still missing. Tick it once it's all in. Everyone sees who did what in <i>Recent activity</i>, and <i>What can we craft now?</i> shows what storage already covers.</li>
     <li><b>Who can do what.</b> Everyone can add to the group list, claim, tick and add spots. The <b>leader</b> and <b>officers</b> also hand out and delete tasks, change base storage, manage the crew, remove items and clear lists. Tap your name at the top to see your role.</li>
     <li><b>Hand out jobs in Group → Tasks.</b> Add friends who only play on their phone by name, assign gathering, crafting or any other job, tell them in voice, and tick it off when they report back.</li>
-    <li><b>Share good spots in Spots.</b> Pin an ore ridge, a spice field or a salvage wreck with a note and up to three screenshots. You can paste a screenshot straight in.</li>` : ""}
+    <li><b>Map.</b> <i>Our map</i> shows the group's pins on Hagga Basin and the Deep Desert: tap <i>+ Drop a pin</i>, then the spot, and add a note and up to three screenshots. <i>Full map · th.gl</i> is the complete community map with every resource node.</li>` : ""}
     <li><b>Using it on more than one device?</b> Tap your name at the top and <i>Save my account with Google</i>. Then sign in with Google on your other phone or PC and everything comes with you.</li>
     <li><b>Copy for Discord</b> on any checklist puts the gathering list on your clipboard, ready to paste.</li>
     <li><b>New to the game?</b> <b>Guide</b> has a step-by-step path from the crash site to the Deep Desert, survival tips, and how guilds, factions, skills, places, vendors, enemies and quests work. It has its own search.</li>
