@@ -1,13 +1,15 @@
 /* Arrakis for Idiots — offline helper. Keeps the app, its scripts and item pictures on the
    device so recipes, the Guide and your lists work without signal. Group data goes through
    Firebase's own offline cache and syncs when you're back online. */
-const VERSION = "20260928153910";
+const VERSION = "20260928165539";
 const APP = "afi-app-" + VERSION, LIB = "afi-lib-v1", IMG = "afi-img-v1";
 const LIB_HOSTS = ["www.gstatic.com", "fonts.googleapis.com", "fonts.gstatic.com"];
 const IMG_HOSTS = ["media.awakening.wiki", "cdn-hosted.gaming.tools"];
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(APP).then(c => c.addAll(["./", "./index.html"])).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(APP).then(c => c.addAll(["./", "./index.html"])
+    .then(() => Promise.all(["./manifest.webmanifest", "./icon-192.png", "./icon-512.png"].map(u => c.add(u).catch(() => {})))))
+    .then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("afi-app-") && k !== APP).map(k => caches.delete(k))))
@@ -35,6 +37,11 @@ self.addEventListener("fetch", e => {
   // wiki item pictures: saved copy first, keep the most recent ~900
   if (IMG_HOSTS.includes(url.hostname)) {
     e.respondWith(caches.open(IMG).then(c => c.match(req).then(hit => hit || fetch(req).then(res => { if (res.ok || res.type === "opaque") { c.put(req, res.clone()); trimImages(); } return res; }))));
+    return;
+  }
+  // the app's own small files (manifest, icons): network first, saved copy offline
+  if (url.origin === location.origin) {
+    e.respondWith(fetch(req).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || Response.error())));
     return;
   }
   // everything else (Firestore, Google sign-in) goes straight to the network
