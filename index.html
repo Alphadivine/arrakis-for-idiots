@@ -328,6 +328,61 @@ h3.sub{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase
   nav.tabs button{font-size:10.5px;letter-spacing:.02em;padding:9px 1px}
   nav.tabs .badge{display:none}
 }
+
+/* ---------- v4: planner, vehicle modules, saved, craft-now, stations ---------- */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:10px;background:var(--surface);align-self:flex-start}
+.seg button{border:0;background:none;padding:7px 14px;font:600 12.5px/1 var(--sans);color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.star{margin-left:auto;align-self:flex-start;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font:600 12.5px/1.2 var(--sans);color:var(--ink);white-space:nowrap}
+.star[aria-pressed="true"]{border-color:var(--warn);color:var(--warn)}
+.hint{font-size:13px;color:var(--muted);margin:6px 0;max-width:68ch}
+.hint .lnk,.stl,.grpl{background:none;border:0;padding:0;color:var(--ibad);font:inherit;font-weight:600;cursor:pointer}
+.hint .lnk:hover,.stl:hover,.grpl:hover{text-decoration:underline}
+.grpl{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:7px 10px}
+.opt small{display:block;color:var(--muted);font-size:11.5px}
+.opt:hover{border-color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--spice);background:var(--spice-soft)}
+.plannerwrap{height:100%;overflow:auto}
+.plannerv{display:grid;grid-template-columns:minmax(320px,1fr) minmax(300px,420px);gap:20px;align-items:start}
+.plannerv .sticky{position:sticky;top:0}
+.prow{display:grid;grid-template-columns:26px 1fr auto auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.prow .nm{background:none;border:0;padding:0;text-align:left;color:var(--ink);font:500 14px var(--sans)}
+.prow .nm:hover{color:var(--spice)}
+.prow:not(.on) .nm{color:var(--muted)}
+.pw{font:500 11.5px var(--mono);color:var(--muted);white-space:nowrap}
+.pw.plus{color:var(--good)}
+.meter{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden;margin:8px 0 12px}
+.meter i{display:block;height:100%;background:var(--good)}
+.meter.bad i{background:var(--spice)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats div{background:var(--surface2);border-radius:var(--r);padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+.stats small{font:600 10.5px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stats b{font-size:17px}
+.stats .neg{color:var(--spice)}
+.stats .pos{color:var(--good)}
+.warn{font-size:13.5px;color:var(--spice);font-weight:600;margin:10px 0 0}
+ul.plain{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+ul.plain li{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(--muted)}
+.cnlist{display:grid;grid-template-columns:1fr;gap:2px}
+.cn{display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0}
+.cn:hover span{color:var(--spice)}
+.cn small{display:block;color:var(--muted);font-size:12px}
+.station .pills{margin-top:4px}
+.station .pill{display:inline-flex;align-items:center;gap:6px}
+.station .facts{margin-bottom:6px}
+@media (max-width:760px){
+  .plannerv{grid-template-columns:1fr}
+  .plannerv .sticky{position:static}
+  .prow{grid-template-columns:26px 1fr auto;row-gap:0}
+  .prow .ic{grid-row:1/3}
+  .prow .pw{grid-column:2;grid-row:2}
+  .prow .stepper{grid-column:3;grid-row:1/3}
+  .stats b{font-size:15px}
+  .hd{flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
@@ -353,6 +408,7 @@ h3.sub{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase
   <main>
     <div class="view browse" id="browse">
       <div class="pane">
+        <div class="seg" id="craftSeg" role="group" aria-label="Craft view"></div>
         <label class="search">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           <input id="q" type="search" placeholder="Search items, e.g. stillsuit, ingot, sandbike" autocomplete="off" aria-label="Search">
@@ -368,6 +424,7 @@ h3.sub{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase
     <div class="view mylist" id="mylist" hidden></div>
     <div class="view mylist" id="grouplist" hidden></div>
     <div class="view spotsv" id="spots" hidden></div>
+    <div class="view plannerwrap" id="planner" hidden></div>
     <div class="view survive" id="survive" hidden></div>
   </main>
 </div>
@@ -477,7 +534,7 @@ window.icFail = img => {
 
 /* ---------- state ---------- */
 const KEY = "sietch-ledger-v1";
-let S = { tab: "craft", group: "All", tier: "All", bucket: "All", q: "", sel: "Sandbike Mk1", gsel: "Copper Ore", mult: 1, route: {}, list: null, got: {} };
+let S = { tab: "craft", group: "All", tier: "All", bucket: "All", q: "", sel: "Sandbike Mk1", gsel: "Copper Ore", mult: 1, route: {}, list: null, got: {}, fav: [], recent: [], vopt: {}, plan: {} };
 try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
 if (!Array.isArray(S.list)) {
   S.list = [["Sandbike Mk1", 1], ["Cutteray Mk1", 1]].filter(([n]) => ITEMS.has(n));
@@ -485,7 +542,7 @@ if (!Array.isArray(S.list)) {
 }
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
 const hash = (location.hash || "").slice(1);
-if (["craft","gather","list","group","spots","survive"].includes(hash)) S.tab = hash;
+if (["craft","gather","list","group","spots","survive","planner"].includes(hash)) S.tab = hash;
 
 /* ---------- rollup: demand aggregated in dependency order ---------- */
 function routeOf(name) { const it = ITEMS.get(name); return it ? it.routes[Math.min(S.route[name] || 0, it.routes.length - 1)] : null; }
@@ -526,8 +583,11 @@ const rawSorted = raw => [...raw].sort((a, b) => {
 const $ = id => document.getElementById(id);
 function setTab(t) {
   S.tab = t; save();
-  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === (t === "planner" ? "craft" : t)));
   $("browse").hidden = !(t === "craft" || t === "gather");
+  $("planner").hidden = t !== "planner";
+  $("craftSeg").hidden = t !== "craft";
+  if (t === "planner") renderPlanner();
   $("mylist").hidden = t !== "list";
   $("grouplist").hidden = t !== "group";
   $("survive").hidden = t !== "survive";
@@ -547,7 +607,9 @@ function chip(label, pressed, attrs = "", sw = "") {
 }
 function renderChips() {
   if (S.tab === "craft") {
-    $("groupChips").innerHTML = ["All", ...GROUPS].map(g => chip(g, S.group === g, `data-g="${esc(g)}"`)).join("");
+    const extra = (S.fav.length ? chip("★ Saved", S.group === "__fav", `data-g="__fav"`) : "") + (S.recent.length ? chip("Recent", S.group === "__recent", `data-g="__recent"`) : "");
+    if ((S.group === "__fav" && !S.fav.length) || (S.group === "__recent" && !S.recent.length)) S.group = "All";
+    $("groupChips").innerHTML = chip("All", S.group === "All", `data-g="All"`) + extra + GROUPS.map(g => chip(g, S.group === g, `data-g="${esc(g)}"`)).join("") + chip("Stations", S.group === "__st", `data-g="__st"`);
     $("tierChips").innerHTML = chip("Any tier", S.tier === "All", `data-t="All"`) +
       TIER_NAME.map((n, i) => chip(n, S.tier === String(i), `data-t="${i}" title="Tier ${i} / Mk${i}"`, tierColor(i))).join("");
     $("tierChips").hidden = false;
@@ -566,8 +628,10 @@ function renderBrowse() {
   $("q").placeholder = S.tab === "craft" ? "Search items, e.g. stillsuit, ingot, sandbike" : "Search materials, e.g. ore, fiber, spice";
   const L = $("results");
   if (S.tab === "craft") {
-    let rows = DATA.items.filter(i => (S.group === "All" || i.g === S.group) && (S.tier === "All" || String(i.t) === S.tier) && (!S.q || matches(i.n, S.q)));
-    rows.sort((a, b) => GROUPS.indexOf(a.g) - GROUPS.indexOf(b.g) || (a.t ?? -1) - (b.t ?? -1) || a.n.localeCompare(b.n));
+    const inGroup = i => S.group === "All" || (S.group === "__fav" ? S.fav.includes(i.n) : S.group === "__recent" ? S.recent.includes(i.n) : S.group === "__st" ? (i.c === "Station" || i.c === "Refinery") && i.n !== "Personal Fabricator" : i.g === S.group);
+    let rows = DATA.items.filter(i => inGroup(i) && (S.tier === "All" || String(i.t) === S.tier) && (!S.q || matches(i.n, S.q)));
+    if (S.group === "__recent") rows.sort((a, b) => S.recent.indexOf(a.n) - S.recent.indexOf(b.n));
+    else rows.sort((a, b) => GROUPS.indexOf(a.g) - GROUPS.indexOf(b.g) || (a.t ?? -1) - (b.t ?? -1) || a.n.localeCompare(b.n));
     $("count").textContent = `${rows.length} of ${DATA.items.length} recipes`;
     L.innerHTML = rows.length ? rows.map(i => `<button class="row" role="listitem" data-n="${esc(i.n)}" aria-current="${i.n === S.sel}">
       <span class="bar" style="background:${tierColor(i.t)}"></span>${iconHTML(i.n, 32)}
@@ -595,7 +659,7 @@ $("q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => 
 $("qClear").onclick = () => { S.q = ""; save(); renderBrowse(); $("q").focus(); };
 
 function select(name) {
-  if (ITEMS.has(name)) { S.sel = name; S.mult = 1; if (S.tab !== "craft") { S.tab = "craft"; } }
+  if (ITEMS.has(name)) { S.sel = name; S.mult = 1; S.recent = [name, ...S.recent.filter(n => n !== name && ITEMS.has(n))].slice(0, 15); if (S.tab !== "craft") { S.tab = "craft"; } }
   else if (RAWS.has(name)) { S.gsel = name; if (S.tab !== "gather") { S.tab = "gather"; } }
   else return;
   save();
@@ -638,19 +702,82 @@ function tierHTML(it) {
   if (!l && it.t == null) return "";
   return `<span class="tier"><i style="background:${tierColor(it.t)}"></i>${esc(l || "Tier " + it.t)}${it.t != null ? " · " + TIER_NAME[it.t] : ""}</span>`;
 }
+
+/* ---------- crafting stations ---------- */
+const STATION_ALIAS = { "Vehicle Fabricator": "Vehicles Fabricator", "Personal Fabricator / Fabricator": "Fabricator" };
+const STATION_NOTE = {
+  "Construction Tool (place near Sub-Fief Console)": "Placed with the Construction Tool inside your base's claimed area.",
+  "Assembled (Welding Torch)": "Put together from its parts with the Welding Torch; no station needed.",
+  "Player inventory": "Made from your inventory; no station needed.",
+};
+const stationItem = st => { const n = STATION_ALIAS[st] || st; return ITEMS.has(n) ? n : null; };
+const MADE_AT = new Map();
+for (const it of DATA.items) for (const rt of it.routes) {
+  const si = stationItem(rt.station); if (!si) continue;
+  if (!MADE_AT.has(si)) MADE_AT.set(si, []);
+  if (!MADE_AT.get(si).includes(it)) MADE_AT.get(si).push(it);
+}
+const familyOf = n => n.replace(/^(Small|Medium|Large|Advanced|Improved)\s+/, "");
+function stationLink(st) {
+  const si = stationItem(st);
+  return si ? `<button class="lnk stl" data-go="${esc(si)}">${esc(si)}</button>` : `<b>${esc(stationShort(st))}</b>`;
+}
+function stationHTML(it) {
+  if (it.g !== "Base" || it.c === "Building") return "";
+  const p = PLAN_ITEMS.find(x => x.n === it.n) || {};
+  const makes = MADE_AT.get(it.n) || [];
+  const fam = DATA.items.filter(x => x.n !== it.n && x.g === "Base" && x.c !== "Building" && familyOf(x.n) === familyOf(it.n));
+  const tiers = makes.map(x => x.t).filter(t => t != null);
+  const facts = [
+    p.power ? `<span>${p.power > 0 ? "Makes" : "Uses"} <b class="num">${fmtN(Math.abs(p.power))}</b> power</span>` : "",
+    p.water ? `<span>Collects <b class="num">≈ ${fmtN(+(p.water * 3.6).toFixed(1))} L</b>/hour</span>` : "",
+    p.cap ? `<span>Holds <b class="num">${fmtN(p.cap / 1000)} L</b></span>` : "",
+    p.slots ? `<span><b class="num">${p.slots}</b> slots</span>` : "",
+    tiers.length ? `<span>Covers <b>${Math.min(...tiers) === Math.max(...tiers) ? "Tier " + Math.min(...tiers) : "Tier " + Math.min(...tiers) + "–" + Math.max(...tiers)}</b></span>` : "",
+  ].filter(Boolean).join("");
+  const by = {};
+  makes.forEach(x => (by[x.g] = by[x.g] || []).push(x));
+  return `<section class="blk station"><h3>About this ${it.c === "Refinery" ? "refinery" : it.c === "Power" ? "generator" : it.c === "Water" ? "water building" : it.c === "Storage" ? "storage" : "station"}</h3>
+    ${facts ? `<div class="facts">${facts}</div>` : ""}
+    <p class="hint">Plan power for it in the <button class="lnk" data-seg="planner">Base planner</button>.</p>
+    ${fam.length ? `<div class="grp">Other sizes and upgrades</div><div class="pills">${fam.map(x => `<button class="pill" data-go="${esc(x.n)}">${iconHTML(x.n, 18)} ${esc(x.n)}</button>`).join("")}</div>` : ""}
+    ${makes.length ? `<div class="grp">Makes ${makes.length} item${makes.length === 1 ? "" : "s"}</div>
+      <div class="usedin">${GROUPS.filter(g => by[g]).map(g => `<h4>${esc(g)} · ${by[g].length}</h4>` + by[g].sort((a, b) => (a.t ?? -1) - (b.t ?? -1) || a.n.localeCompare(b.n)).map(x => `<button data-go="${esc(x.n)}"><span>${esc(x.n)}</span><span class="q">${x.t != null ? "T" + x.t : ""}</span></button>`).join("")).join("")}</div>` : ""}
+  </section>`;
+}
+
+/* optional vehicle modules: same vehicle, not part of the base build; per kind, the highest Mk up to this vehicle's */
+const MANDATORY = new Set(DATA.items.filter(i => i.c === "Vehicle").flatMap(i => i.routes[0].in.map(([n]) => n)));
+const mkOf = n => { const m = n.match(/Mk\s*(\d)/i); return m ? +m[1] : 0; };
+function vehicleOptions(it) {
+  if (it.c !== "Vehicle") return [];
+  const type = it.n.replace(/\s*Mk\s*\d.*$/i, ""), mk = mkOf(it.n);
+  const best = {};
+  for (const m of DATA.items) {
+    if (m.c !== "Vehicle Module" || MANDATORY.has(m.n) || !m.n.startsWith(type + " ")) continue;
+    const kind = m.n.slice(type.length + 1).replace(/\s*Mk\s*\d.*$/i, ""), mm = mkOf(m.n);
+    if (mm > mk) continue;
+    if (!best[kind] || mkOf(best[kind].n) < mm) best[kind] = { n: m.n, kind, mk: "Mk" + mm };
+  }
+  it.mk = "Mk" + mk;
+  return Object.values(best).sort((a, b) => a.kind.localeCompare(b.kind));
+}
 function renderItem(name) {
   const D = $("detail"), it = ITEMS.get(name);
   if (!it) { D.innerHTML = backBtn + `<p class="empty">Pick an item from the list.</p>`; wireDetail(D); return; }
   const ri = Math.min(S.route[name] || 0, it.routes.length - 1), rt = it.routes[ri];
   const mult = Math.max(1, S.mult | 0), times = Math.ceil(mult / rt.out);
-  const { raw, crafts } = rollup([[name, mult]]);
+  const opts = vehicleOptions(it);
+  const picked = (S.vopt[name] || []).filter(n => opts.some(o => o.n === n));
+  const roots = [[name, mult], ...picked.map(n => [n, mult])];
+  const { raw, crafts } = rollup(roots);
   const sub = crafts.filter(c => c.n !== name);
   const inList = S.example ? null : S.list.find(e => e[0] === name);
   const inGroup = G.state === "live" ? G.items.find(x => x.n === name) : null;
   D.innerHTML = backBtn + `
     <div class="hd">${iconHTML(it.n, 72)}<div><div class="eyebrow">${esc(it.g)}${it.c !== it.g ? " · " + esc(it.c) : ""}</div>
-    <h2>${esc(it.n)}</h2></div></div>
-    <div class="facts">${tierHTML(it)}<span>Made at <b>${esc(rt.station)}</b></span>${rt.out > 1 ? `<span>Makes <b class="num">${fmtN(rt.out)}</b> per craft</span>` : ""}${it.cf === "low" ? `<span class="flag" title="Quantities from a single or conflicting source">Check in game</span>` : ""}<a class="wiki" href="${esc(wikiPage(it.n))}" target="_blank" rel="noopener">View on wiki ↗</a></div>
+    <h2>${esc(it.n)}</h2></div><button class="star" id="favBtn" aria-pressed="${S.fav.includes(name)}" title="${S.fav.includes(name) ? "Remove from Saved" : "Save for quick access"}">${S.fav.includes(name) ? "★ Saved" : "☆ Save"}</button></div>
+    <div class="facts">${tierHTML(it)}<span>Made at ${stationLink(rt.station)}</span>${rt.out > 1 ? `<span>Makes <b class="num">${fmtN(rt.out)}</b> per craft</span>` : ""}${it.cf === "low" ? `<span class="flag" title="Quantities from a single or conflicting source">Check in game</span>` : ""}<a class="wiki" href="${esc(wikiPage(it.n))}" target="_blank" rel="noopener">View on wiki ↗</a></div>
     ${it.routes.length > 1 ? `<div class="routes" role="group" aria-label="Recipe variant">${it.routes.map((r, i) => chip(r.station, i === ri, `data-route="${i}"`)).join("")}</div>` : ""}
     <div class="ctl">
       <span style="font-weight:600;font-size:14px">How many?</span>
@@ -658,12 +785,18 @@ function renderItem(name) {
       <span class="btnrow"><button class="btn" id="addBtn">Add to my list</button>${G.state === "live" ? `<button class="btn ghost" id="addGroupBtn">Add to group</button>` : ""}</span>
       ${inList || inGroup ? `<span class="note-ok">${[inList ? fmtN(inList[1]) + " on your list" : "", inGroup ? fmtN(inGroup.q) + " on the group list" : ""].filter(Boolean).join(" · ")}</span>` : ""}
     </div>
+    ${opts.length ? `<section class="blk"><h3>Optional modules</h3>
+      <p class="hint">Tap to include one in the totals below${G.state === "live" ? " and when you add this to a list" : " and when you add this to your list"}.</p>
+      <div class="opts">${opts.map(o => `<button class="opt" data-opt="${esc(o.n)}" aria-pressed="${picked.includes(o.n)}">${iconHTML(o.n, 24)}<span>${esc(o.kind)}<small>${esc(o.mk)}${o.mk !== it.mk ? " · highest in the data" : ""}</small></span></button>`).join("")}</div>
+      ${picked.length ? `<p class="hint">Totals include ${picked.length} optional module${picked.length > 1 ? "s" : ""}.</p>` : ""}</section>` : ""}
     <section class="blk"><h3>Ingredients${times > 1 ? ` · ${fmtN(times)} crafts` : ""}</h3>
       <div class="ing">${rt.in.map(([n, q]) => `<div><span class="q">${fmtQplain(n, q * times)}</span>${iconHTML(n, 26)}<button class="lnk" data-go="${esc(n)}">${esc(n)}</button><span class="k">${ITEMS.has(n) ? "crafted" : esc(RAWS.get(n)?.b || "")}</span></div>`).join("")}</div>
     </section>
-    <section class="blk"><h3>Everything to gather</h3>${tallyHTML(raw)}</section>
+    <section class="blk"><h3>Everything to gather${picked.length ? " · with modules" : ""}</h3>${tallyHTML(raw)}</section>
     ${sub.length ? `<section class="blk"><h3>Craft first · ${sub.length} step${sub.length > 1 ? "s" : ""}</h3>
       <ol class="steps">${sub.reverse().map(c => `<li><span class="q">${fmtN(c.times)}×</span><span><button class="lnk" style="background:none;border:0;padding:0;color:inherit;text-align:left" data-go="${esc(c.n)}">${esc(c.n)}</button>${c.make !== c.times ? ` <span style="color:var(--muted)">→ ${fmtQplain(c.n, c.make)}</span>` : ""}</span><span class="st">${esc(c.station.replace(/\s*\(.*\)/, ""))}</span></li>`).join("")}</ol></section>` : ""}
+    ${STATION_NOTE[rt.station] ? `<p class="hint">${esc(STATION_NOTE[rt.station])}</p>` : ""}
+    ${stationHTML(it)}
     <section class="blk"><h3>Used in</h3>${usedInHTML(name)}</section>
     <section class="blk meta"><h3>Notes</h3>
       ${it.found ? `<p><b>Also found:</b> ${esc(it.found)}</p>` : ""}
@@ -672,24 +805,35 @@ function renderItem(name) {
       ${it.s ? `<p>Source: <a href="${esc(it.s)}" target="_blank" rel="noopener">${esc(it.s.replace(/^https?:\/\/(www\.)?/, "").slice(0, 60))}</a></p>` : ""}
     </section>`;
   wireDetail(D);
+  wireSeg(D);
   D.querySelectorAll("[data-route]").forEach(b => b.onclick = () => { S.route[name] = +b.dataset.route; save(); renderItem(name); });
   D.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { S.mult = Math.max(1, mult + +b.dataset.m); save(); renderItem(name); });
   const mi = $("mult");
   mi.onchange = () => { S.mult = Math.max(1, parseInt(mi.value, 10) || 1); save(); renderItem(name); };
+  const extraNote = picked.length ? ` + ${picked.length} module${picked.length > 1 ? "s" : ""}` : "";
   $("addBtn").onclick = () => {
     if (S.example) { S.list = []; S.example = false; }
-    const e = S.list.find(x => x[0] === name);
-    e ? e[1] += mult : S.list.push([name, mult]);
+    for (const [n, q] of roots) { const e = S.list.find(x => x[0] === n); e ? e[1] += q : S.list.push([n, q]); }
     save(); updateBadge(); pushMine(); renderItem(name);
-    toast(`Added ${fmtN(mult)} ${name} to your list`);
+    toast(`Added ${fmtN(mult)} ${name}${extraNote} to your list`);
   };
   const ag = $("addGroupBtn");
   if (ag) ag.onclick = async () => {
     ag.disabled = true;
-    try { await Group.add(name, mult); toast(`Added ${fmtN(mult)} ${name} to the group list`); }
+    try { for (const [n, q] of roots) await Group.add(n, q); toast(`Added ${fmtN(mult)} ${name}${extraNote} to the group list`); }
     catch (e) { toast(errText(e)); }
     ag.disabled = false;
   };
+  $("favBtn").onclick = () => {
+    S.fav = S.fav.includes(name) ? S.fav.filter(n => n !== name) : [name, ...S.fav];
+    save(); renderChips(); renderItem(name);
+    toast(S.fav.includes(name) ? `Saved ${name}. Find it under ★ Saved.` : `Removed ${name} from Saved`);
+  };
+  D.querySelectorAll("[data-opt]").forEach(b => b.onclick = () => {
+    const o = b.dataset.opt, cur = S.vopt[name] || [];
+    S.vopt[name] = cur.includes(o) ? cur.filter(x => x !== o) : [...cur, o];
+    save(); renderItem(name);
+  });
 }
 function renderRaw(name) {
   const D = $("detail"), r = RAWS.get(name);
@@ -729,7 +873,7 @@ function runHTML(crafts, lede) {
   const byStation = {};
   crafts.slice().reverse().forEach(c => { const st = stationShort(c.station); (byStation[st] = byStation[st] || []).push(c); });
   return `<div class="card"><h2>Crafting run</h2><p class="lede">${lede}</p>
-    ${Object.entries(byStation).map(([st, cs]) => `<div class="grp">${esc(st)}</div><ol class="steps">${cs.map(c => `<li><span class="q">${fmtN(c.times)}×</span><button class="lnk" style="background:none;border:0;padding:0;text-align:left;color:inherit" data-go="${esc(c.n)}">${esc(c.n)}</button><span class="st num">${c.make !== c.times ? "→ " + fmtQplain(c.n, c.make) : ""}</span></li>`).join("")}</ol>`).join("")}
+    ${Object.entries(byStation).map(([st, cs]) => `<div class="grp">${stationItem(st) ? `<button class="lnk grpl" data-go="${esc(stationItem(st))}">${esc(st)}</button>` : esc(st)}</div><ol class="steps">${cs.map(c => `<li><span class="q">${fmtN(c.times)}×</span><button class="lnk" style="background:none;border:0;padding:0;text-align:left;color:inherit" data-go="${esc(c.n)}">${esc(c.n)}</button><span class="st num">${c.make !== c.times ? "→ " + fmtQplain(c.n, c.make) : ""}</span></li>`).join("")}</ol>`).join("")}
   </div>`;
 }
 /* rows: [[name, stillNeeded]]. o: {prefix, attr, isGot(n), whoGot(n), gross: Map, stock: {}, actions: bool} */
@@ -909,6 +1053,7 @@ function renderGroup() {
         <button class="btn small" type="submit">Add</button>
       </form>
     </div>
+    ${craftNowHTML(stock)}
     <div class="card">
       <h2>Players</h2>
       <p class="lede">What everyone is working on for themselves. Tap an item to open it.</p>
@@ -956,7 +1101,52 @@ function renderGroup() {
   armConfirm($("gClear"), "Tap again to clear for everyone", () => run(Group.clear()));
   armConfirm($("gUntick"), "Tap again to untick for everyone", () => run(Group.untickAll()));
   const rn = $("renameMe"); if (rn) rn.onclick = openJoin;
+  const cm2 = $("cnMore"); if (cm2) cm2.onclick = () => { cnAll = !cnAll; renderGroup(); };
   const cg = $("copyGroup"); if (cg) cg.onclick = () => copyText(discordText("Group gathering", rows, opts));
+}
+
+
+/* ---------- what can we craft now (from base storage) ---------- */
+/* Water isn't tracked in storage, so it's assumed to be on hand. */
+let cnKey = "", cnCache = null, cnAll = false;
+function craftNow(stock) {
+  const key = JSON.stringify(stock) + "|" + JSON.stringify(S.route);
+  if (key === cnKey) return cnCache;
+  const st = { ...stock, Water: 1e12 };
+  const ready = [], deep = [], short = [];
+  for (const it of DATA.items) {
+    if (it.c === "Building") continue;
+    const rt = routeOf(it.n);
+    if (!rt || !rt.in.length) continue;
+    if (rt.in.every(([n, q]) => (st[n] || 0) >= q)) { ready.push({ it }); continue; }
+    const own = { ...st }; delete own[it.n];
+    const { raw, crafts, used } = rollup([[it.n, 1]], own);
+    const usedReal = [...used.keys()].filter(n => n !== "Water");
+    if (!usedReal.length) continue;
+    const missing = [...raw].filter(([n, q]) => q > 0 && n !== "Water");
+    if (!missing.length) deep.push({ it, steps: crafts.length - 1 });
+    else if (missing.length === 1) short.push({ it, n: missing[0][0], q: missing[0][1] });
+  }
+  const order = (a, b) => GROUPS.indexOf(a.it.g) - GROUPS.indexOf(b.it.g) || (b.it.t ?? -1) - (a.it.t ?? -1) || a.it.n.localeCompare(b.it.n);
+  ready.sort(order); deep.sort(order); short.sort((a, b) => a.q - b.q || order(a, b));
+  cnKey = key; cnCache = { ready, deep, short };
+  return cnCache;
+}
+function craftNowHTML(stock) {
+  if (!Object.keys(stock).length) return `<div class="card"><h2>What can we craft now?</h2><p class="lede">Record what's in base storage above and this shows what the group can make right away.</p></div>`;
+  const { ready, deep, short } = craftNow(stock);
+  const cap = cnAll ? 999 : 8;
+  const row = (x, sub) => `<button class="cn" data-go="${esc(x.it.n)}">${iconHTML(x.it.n, 24)}<span>${esc(x.it.n)}<small>${sub}</small></span></button>`;
+  const block = (title, arr, sub) => arr.length ? `<div class="grp">${title} · ${arr.length}</div><div class="cnlist">${arr.slice(0, cap).map(x => row(x, sub(x))).join("")}</div>` : "";
+  const more = [ready, deep, short].some(a => a.length > 8);
+  return `<div class="card"><h2>What can we craft now?</h2>
+    <p class="lede">From what's in base storage, assuming you have water.</p>
+    ${block("Ready to craft", ready, x => esc(stationShort(routeOf(x.it.n).station)))}
+    ${block("Ready if you craft the parts first", deep, x => `${x.steps} step${x.steps === 1 ? "" : "s"} first`)}
+    ${block("One material short", short, x => `needs ${fmtQplain(x.n, x.q)} more ${esc(x.n)}`)}
+    ${!ready.length && !deep.length && !short.length ? `<p class="empty">Nothing yet. Add more of what's in storage.</p>` : ""}
+    ${more ? `<div class="toolbar"><button class="btn ghost small" id="cnMore">${cnAll ? "Show fewer" : "Show all"}</button></div>` : ""}
+  </div>`;
 }
 
 /* ---------- spots board ---------- */
@@ -1328,8 +1518,124 @@ function renderSurvive() {
   V.querySelectorAll("[data-go2]").forEach(b => b.onclick = () => go(b.dataset.go2));
 }
 
+
+/* ---------- base planner ---------- */
+const NOT_PLACED = new Set(["Personal Fabricator", "Respawn Beacon", "Spice-infused Fuel Cell", "Plastone", "Silicone Block", "Cobalt Paste"]);
+const numIn = (re, t) => { const m = (t || "").match(re); return m ? parseFloat(m[1].replace(/,/g, "")) : null; };
+const PLAN_SECTIONS = [["Power", "Power"], ["Water", "Water"], ["Station", "Crafting stations"], ["Refinery", "Refineries"], ["Storage", "Storage"], ["Base", "Base"]];
+/* fuel use, from the generator notes: a Fuel Cell lasts 1 hour, a Spice-infused Fuel Cell 1 h 30 m */
+const FUEL = { "Fuel-Powered Generator": ["Fuel Cell", 1], "Spice-Powered Generator": ["Spice-infused Fuel Cell", 1 / 1.5] };
+const PLAN_ITEMS = DATA.items.filter(i => i.g === "Base" && i.c !== "Building" && !NOT_PLACED.has(i.n)).map(i => ({
+  n: i.n, c: i.c,
+  power: numIn(/Power\s*([+-]?\d[\d,]*)/, i.no),
+  water: numIn(/Gather rate\s*([\d.]+)\s*\/s/, i.no),        // mL per second
+  cap: /Cistern/.test(i.n) ? numIn(/Capacity\s*([\d,]+)/, i.no) : null,
+  slots: numIn(/(\d+)\s*slots/, i.no),
+}));
+const STARTER_PLAN = { "Sub-Fief Console": 1, "Fuel-Powered Generator": 1, "Fabricator": 1, "Small Ore Refinery": 1, "Windtrap": 1, "Water Cistern": 1, "Chest": 2 };
+function planCounts() {
+  if (!S.plan || !Object.keys(S.plan).length) { S.plan = { ...STARTER_PLAN }; S.planExample = true; }
+  return Object.entries(S.plan).filter(([n, q]) => q > 0 && PLAN_ITEMS.some(p => p.n === n));
+}
+const fmtW = w => (w > 0 ? "+" : "") + fmtN(w);
+function segHTML(active) {
+  return `<div class="seg" role="group" aria-label="Craft view"><button data-seg="craft" aria-pressed="${active === "craft"}">Recipes</button><button data-seg="planner" aria-pressed="${active === "planner"}">Base planner</button></div>`;
+}
+function wireSeg(root) { root.querySelectorAll("[data-seg]").forEach(b => b.onclick = () => setTab(b.dataset.seg)); }
+function renderPlanner() {
+  const V = $("planner");
+  const counts = planCounts();
+  const byName = Object.fromEntries(PLAN_ITEMS.map(p => [p.n, p]));
+  let made = 0, used = 0, water = 0, cap = 0, slots = 0;
+  const fuel = {}, needs = [];
+  for (const [n, q] of counts) {
+    const p = byName[n];
+    if (p.power > 0) made += p.power * q; else if (p.power < 0) used += -p.power * q;
+    if (p.water) water += p.water * 3600 * q;
+    if (p.cap) cap += p.cap * q;
+    if (p.slots) slots += p.slots * q;
+    if (FUEL[n]) { const [f, perH] = FUEL[n]; fuel[f] = (fuel[f] || 0) + perH * q; }
+    if (/Wind Turbine/.test(n)) needs.push("Wind turbines need Lubricant to run.");
+    if (/Windtrap/.test(n)) needs.push("Windtraps need a filter (they wear out after about 3 or 8 hours depending on the filter) and must be out in the open.");
+    if (/Deathstill/.test(n)) needs.push(`${n}: turns a corpse into water (see its recipe page for the rate).`);
+    if (/Blood Purifier/.test(n)) needs.push(`${n}: turns Blood Sacks into water.`);
+  }
+  const bal = made - used;
+  const entries = counts.map(([n, q]) => [n, q]);
+  const { raw } = rollup(entries);
+  V.innerHTML = `${segHTML("planner")}
+  <div class="plannerv">
+    <div class="col">
+      <div class="card">
+        <h2>Base planner</h2>
+        <p class="lede">${S.planExample ? "A starter base to show how it works. Change any count and it becomes yours." : "Set how many of each you plan to build. Your plan is saved on this device."}</p>
+        ${PLAN_SECTIONS.map(([c, label]) => {
+          const ps = PLAN_ITEMS.filter(p => p.c === c);
+          if (!ps.length) return "";
+          return `<div class="grp">${esc(label)}</div>` + ps.map(p => {
+            const q = S.plan[p.n] || 0;
+            const tag = p.power ? `<span class="pw ${p.power > 0 ? "plus" : ""}">${fmtW(p.power)} power</span>` : p.cap ? `<span class="pw">${fmtN(p.cap / 1000)} L</span>` : p.slots ? `<span class="pw">${p.slots} slots</span>` : "";
+            return `<div class="prow ${q ? "on" : ""}">${iconHTML(p.n, 26)}<button class="nm lnk" data-go="${esc(p.n)}">${esc(p.n)}</button>${tag}
+              <span class="stepper sm"><button data-pq="${esc(p.n)}" data-d="-1" aria-label="Fewer ${esc(p.n)}">−</button><input class="num" data-pi="${esc(p.n)}" value="${q}" inputmode="numeric" aria-label="How many ${esc(p.n)}"><button data-pq="${esc(p.n)}" data-d="1" aria-label="More ${esc(p.n)}">+</button></span></div>`;
+          }).join("");
+        }).join("")}
+        <div class="toolbar"><button class="btn ghost small" id="planReset">Clear plan</button></div>
+      </div>
+    </div>
+    <div class="col sticky">
+      <div class="card">
+        <h2>Power</h2>
+        <div class="meter ${bal < 0 ? "bad" : ""}" aria-hidden="true"><i style="width:${made ? Math.min(100, used / made * 100) : used ? 100 : 0}%"></i></div>
+        <div class="stats">
+          <div><small>Made</small><b class="num">${fmtN(made)}</b></div>
+          <div><small>Used</small><b class="num">${fmtN(used)}</b></div>
+          <div><small>${bal < 0 ? "Short by" : "Spare"}</small><b class="num ${bal < 0 ? "neg" : "pos"}">${fmtN(Math.abs(bal))}</b></div>
+        </div>
+        ${bal < 0 ? `<p class="warn">Not enough power. Add a generator or wind turbine, or the base shield and stations will shut off.</p>` : ""}
+        ${Object.keys(fuel).length ? `<h3 class="sub">Fuel</h3><ul class="plain">${Object.entries(fuel).map(([f, h]) => `<li>${iconHTML(f, 20)} <b class="num">${fmtN(+h.toFixed(2))}</b> ${esc(f)} per hour · <b class="num">${fmtN(Math.ceil(h * 24))}</b> per day</li>`).join("")}</ul>` : ""}
+      </div>
+      <div class="card">
+        <h2>Water & storage</h2>
+        <div class="stats">
+          <div><small>Windtraps</small><b class="num">${water ? "≈ " + fmtN(+(water / 1000).toFixed(1)) + " L/h" : "0"}</b></div>
+          <div><small>Per day</small><b class="num">${water ? "≈ " + fmtN(Math.round(water * 24 / 1000)) + " L" : "0"}</b></div>
+          <div><small>Cisterns hold</small><b class="num">${fmtN(cap / 1000)} L</b></div>
+        </div>
+        ${water && cap && water * 24 > cap ? `<p class="hint">Cisterns fill in about ${fmtN(Math.round(cap / water))} hours.</p>` : ""}
+        ${slots ? `<p class="hint">Storage: ${fmtN(slots)} slots.</p>` : ""}
+        ${[...new Set(needs)].length ? `<ul class="plain notes">${[...new Set(needs)].map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+      </div>
+      <div class="card">
+        <div class="cardhd"><h2>Build cost</h2></div>
+        <p class="lede">Everything to gather for this plan${counts.length ? ` (${counts.reduce((a, [, q]) => a + q, 0)} structures)` : ""}.</p>
+        ${raw.size ? tallyHTML(raw) : `<p class="empty">Add something to see the cost.</p>`}
+        ${counts.length ? `<div class="toolbar"><button class="btn small" id="planMine">Add to my list</button>${G.state === "live" ? `<button class="btn ghost small" id="planGroup">Add to group</button>` : ""}</div>` : ""}
+      </div>
+      <p class="foot">Power and water figures come from dune.gaming.tools and awakening.wiki. Windtrap output is an estimate from their gather rate; weather and filters change it in game.</p>
+    </div>
+  </div>`;
+  wireSeg(V);
+  V.querySelectorAll("[data-go]").forEach(b => b.onclick = () => select(b.dataset.go));
+  const setQ = (n, q) => { if (S.planExample) { S.planExample = false; } S.plan[n] = Math.max(0, Math.min(99, q)); if (!S.plan[n]) delete S.plan[n]; if (!Object.keys(S.plan).length) S.plan = { __empty: 0 }; save(); renderPlanner(); };
+  V.querySelectorAll("[data-pq]").forEach(b => b.onclick = () => setQ(b.dataset.pq, (S.plan[b.dataset.pq] || 0) + +b.dataset.d));
+  V.querySelectorAll("[data-pi]").forEach(i => i.onchange = () => setQ(i.dataset.pi, parseInt(i.value, 10) || 0));
+  armConfirm($("planReset"), "Tap again to clear", () => { S.plan = { __empty: 0 }; S.planExample = false; save(); renderPlanner(); });
+  const pm = $("planMine");
+  if (pm) pm.onclick = () => {
+    if (S.example) { S.list = []; S.example = false; }
+    for (const [n, q] of entries) { const e = S.list.find(x => x[0] === n); e ? e[1] += q : S.list.push([n, q]); }
+    save(); updateBadge(); pushMine(); toast(`Added ${entries.length} structures to your list`);
+  };
+  const pg = $("planGroup");
+  if (pg) pg.onclick = async () => {
+    pg.disabled = true;
+    try { for (const [n, q] of entries) await Group.add(n, q); toast(`Added ${entries.length} structures to the group list`); } catch (e) { toast(errText(e)); }
+    pg.disabled = false;
+  };
+}
+
 /* ---------- how-to guide (opens once on first visit) ---------- */
-const GUIDE_VERSION = 2;
+const GUIDE_VERSION = 3;
 function guideHTML() {
   const group = !!(CONFIG.FIREBASE.apiKey && CONFIG.FIREBASE.projectId);
   const legend = TIER_NAME.map((n, i) => `<span class="tier"><i style="background:${tierColor(i)}"></i>${n}</span>`).join("");
@@ -1337,9 +1643,11 @@ function guideHTML() {
   <p class="lede">A crafting helper for Dune: Awakening. Look anything up, see every raw material it takes${group ? ", and plan it together with the group" : ""}.</p>
   <ol class="howto">
     <li><b>Find a recipe in Craft.</b> Search by name or filter by type and tier. Set <i>How many?</i> and it adds up every part down to the ore, fiber and loot you need, plus what to craft first and at which station.</li>
+    <li><b>Vehicles:</b> open any vehicle and tap its optional modules (booster, storage, scanner…) to include them in the totals. <b>Stations:</b> “Made at” opens the station's page with its power use, everything it makes and its bigger versions. Tap <b>☆ Save</b> on anything you check often; it shows under <i>★ Saved</i>, next to <i>Recent</i>.</li>
+    <li><b>Plan your base.</b> <i>Base planner</i> (top of Craft) adds up power, fuel per hour, water per hour, storage and the full build cost for the generators, windtraps and stations you pick.</li>
     <li><b>Look up a material in Gather.</b> Where to find it, what tool gathers it, and everything it's used in.</li>
     <li><b>Plan it.</b> <i>Add to my list</i> puts it on <b>Mine</b>, your own gear goals${group ? ". <i>Add to group</i> puts it on the shared <b>Group</b> list for base projects and vehicles you build together" : ""}.</li>
-    ${group ? `<li><b>Split the work in Group.</b> Tap <i>I'm on it</i> on a material so nobody farms the same thing. Type what's already <i>In storage</i> and every total shrinks to what's still missing. Tick it once it's all in. Everyone sees who did what in <i>Recent activity</i>.</li>
+    ${group ? `<li><b>Split the work in Group.</b> Tap <i>I'm on it</i> on a material so nobody farms the same thing. Type what's already <i>In storage</i> and every total shrinks to what's still missing. Tick it once it's all in. Everyone sees who did what in <i>Recent activity</i>, and <i>What can we craft now?</i> shows what storage already covers.</li>
     <li><b>Share good spots in Spots.</b> Pin an ore ridge, a spice field or a salvage wreck with a note and up to three screenshots. You can paste a screenshot straight in.</li>` : ""}
     <li><b>Copy for Discord</b> on any checklist puts the gathering list on your clipboard, ready to paste.</li>
     <li><b>New to the game?</b> <b>Survive</b> has a step-by-step path from the crash site to the Deep Desert, plus tips on water, sandworms and storms.</li>
@@ -1370,6 +1678,8 @@ $("regionNames").innerHTML = REGIONS.map(n => `<option value="${esc(n)}"></optio
 
 /* ---------- boot ---------- */
 $("ver").textContent = DATA.version;
+$("craftSeg").innerHTML = segHTML("craft").replace(/^<div class="seg"[^>]*>|<\/div>$/g, "");
+wireSeg($("craftSeg"));
 updateBadge();
 setTab(S.tab);
 initGroup();

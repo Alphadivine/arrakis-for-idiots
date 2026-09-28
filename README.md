@@ -4,7 +4,7 @@ A **Dune: Awakening** crafting companion for our server. Look up any recipe, see
 
 Arrakis for Idiots is a single self-contained HTML file. No build step, no framework, no server of our own. It runs in the browser and stores shared group data in a free [Firebase](https://firebase.google.com) database. Friends join with a nickname and the group code; **no accounts needed**.
 
-> **Live site:** https://alphadivine.github.io/arrakis-for-idiots
+> **Live site:** [alphadivine.github.io/arrakis-for-idiots](https://alphadivine.github.io/arrakis-for-idiots/#craft)
 
 Recipe data is for **Update 1.5** (game version 1.5.3.3).
 
@@ -16,11 +16,16 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 - **Item pictures**: real in-game icons for 558 of the 562 items, shown straight from [awakening.wiki](https://awakening.wiki). If one doesn't load, a drawn icon in the tier color takes its place. **View on wiki** on any item opens its full page.
 - **Search and filter** by category and tier: Salvaged → Copper → Iron → Steel → Aluminum → Duraluminum → Plastanium. Each tier has its own color.
 - **Full breakdown**: set how many you want and it rolls every sub-part down to raw materials, lists what to craft first and at which station, and shows everything the item is used in.
+- **Vehicle builder**: open any vehicle and switch its optional modules on (booster, storage, scanner, backseat, rocket launcher and so on). Totals and "Add to list" include them.
+- **Station pages**: "Made at" on every recipe opens its station: power use, everything it makes (grouped, with tiers), and its other sizes and upgrades. A **Stations** filter lists them all.
+- **Base planner**: pick how many generators, wind turbines, windtraps, cisterns, refineries, fabricators and chests you'll build. It adds up power made vs used, fuel burned per hour and day, water per hour, cistern and storage space, and the full build cost, which you can send to your list or the group's.
+- **Saved and Recent**: star recipes you check often; both show as quick filters in Craft.
 - **Gather tab**: 56 raw and looted materials with how and where to get them (Hagga Basin, Deep Desert, which tool), and what each one feeds into.
 - **Group list**: shared with everyone who joined. Anyone can add, change or remove items, and each shows who added it. Add from any recipe with **Add to group**.
 - **Group gathering checklist**: tick a material once it's all in. Everyone sees the tick live, with **who did it**.
 - **"I'm on it" claims**: claim a material so two people don't farm the same thing. Everyone sees who's gathering what.
 - **Base storage**: record what the group already has (raw materials or crafted parts like ingots). Every total shrinks to what's still missing, at every level, so 20 Copper Ingots in storage mean fewer ingots to refine and less ore to mine.
+- **What can we craft now?**: from base storage, shows what's ready to craft, what's ready once you make the parts, and what's one material short (and by how much).
 - **Recent activity**: a feed of adds, claims, ticks, storage and new spots ("Mike is gathering Copper Ore").
 - **Spots board**: pin good ore, spice and salvage spots with a region, a note and up to 3 screenshots (drop, paste or pick). Screenshots are shrunk automatically.
 - **Copy for Discord**: one tap copies any gathering checklist as text, ready to paste.
@@ -212,6 +217,8 @@ When the game patches, the recipe data gets rebuilt into a new `index.html`. Fir
 - **Private servers** can change sandworm, Coriolis storm and decay settings, so the Survive tab's advice on those may not match ours.
 - Personal-list **ticks stay on each device**. Only the group checklist is shared.
 - **Pictures** load from awakening.wiki's servers. Four items have no wiki picture (Adept Dual Blades, Adept Missile Launcher, Cutteray Mk4, Personal Fabricator) and always use the drawn icon. If the wiki ever blocks outside sites, every item falls back to drawn icons automatically.
+- **Base planner** figures come from the recipe data: power per structure, fuel from the generator notes (a Fuel Cell lasts 1 hour, a Spice-infused Fuel Cell 1 h 30 m) and windtrap output from its gather rate. Treat water per hour as an estimate. Wind turbine lubricant use isn't in the data.
+- **Optional vehicle modules** only exist in the data for some tiers. Where a newer one isn't listed, the builder offers the highest tier it has and says so.
 - **Screenshots** are stored in Firestore, about 100–300 KB each after shrinking. The free 1 GiB holds a few thousand.
 
 ---
