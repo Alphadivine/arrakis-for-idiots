@@ -492,6 +492,102 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
 .entry.ro{grid-template-columns:4px 26px 1fr auto auto}
 .entry.ro .q{font:500 14px var(--mono);padding-right:6px}
 .entry.g.ro{grid-template-columns:4px 26px 1fr auto auto auto}
+
+/* ---------- v10: app layout, polish, theme, search, alerts ---------- */
+nav.tabs button{display:inline-flex;align-items:center;gap:6px;position:relative}
+nav.tabs .ti{width:15px;height:15px;flex:none;opacity:.85}
+.newdot{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--spice);box-shadow:0 0 0 2px var(--bg)}
+nav.tabs button[aria-selected="true"] .newdot{background:var(--on-spice);box-shadow:0 0 0 2px var(--spice)}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.iconbtn{position:relative;width:32px;height:32px;display:inline-grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0}
+.iconbtn svg{width:16px;height:16px}
+.iconbtn:hover,.help:hover{border-color:var(--muted)}
+.iconbtn .kbd{position:absolute;right:-4px;bottom:-4px;font:600 9px/1 var(--mono);background:var(--surface2);border:1px solid var(--line);border-radius:3px;padding:1px 3px;color:var(--muted)}
+.status[data-state="connecting"] i{background:var(--muted);animation:pulse 1.2s ease-in-out infinite}
+.status[data-state="offline-cached"] i{background:var(--warn)}
+@keyframes pulse{50%{opacity:.3}}
+.searchrow{display:flex;gap:8px;align-items:stretch}
+.searchrow .search{flex:1;min-width:0}
+.filterbtn{display:none;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:0 12px;font:600 13px var(--sans);color:var(--ink)}
+.filterbtn svg{width:16px;height:16px}
+.fcount{background:var(--spice);color:var(--on-spice);border-radius:9px;padding:1px 6px;font-size:11px}
+#grouplist .gseg{margin:0}
+.mylist{grid-auto-rows:min-content}
+button,.chip,.pill,.row,.tile,.opt,.cn{-webkit-tap-highlight-color:transparent}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.chip,.pill,.opt,.claim,.iconbtn,.help,.status,nav.tabs button,.seg button{transition:transform .08s ease,background-color .12s,border-color .12s,color .12s}
+  .btn:active,.chip:active,.pill:active,.opt:active,.claim:active,.iconbtn:active,.help:active,nav.tabs button:active,.seg button:active{transform:scale(.96)}
+}
+.btn:disabled{opacity:.55;cursor:default}
+/* search everything */
+.searchdlg{padding:14px;width:min(640px,calc(100% - 24px));margin-top:8vh;align-self:start}
+.search.big{padding:0 6px 0 12px}
+.search.big input{font-size:16px;padding:12px 0}
+.sresults{max-height:min(60vh,520px);overflow:auto;margin-top:8px}
+.sgrp{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 4px 4px}
+.sres{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:var(--r);padding:7px 8px}
+.sres:hover,.sres[aria-selected="true"]{background:var(--surface2)}
+.sres small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sres .tag{font:500 11px var(--mono);color:var(--muted)}
+.sres .ic,.sres .sg{width:28px;height:28px}
+.sg{display:grid;place-items:center;border-radius:5px;background:var(--surface2);color:var(--muted)}
+.sg svg{width:16px;height:16px}
+.shint{font-size:12.5px;color:var(--muted);padding:10px 6px}
+.mine-tag{display:inline-block;margin-left:6px;font:700 10px/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:4px;background:var(--spice);color:var(--on-spice)}
+.task.new{background:linear-gradient(90deg,var(--spice-soft),transparent 60%)}
+.feed li.new b::after{content:"new";margin-left:6px;font:700 9.5px/1 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--spice)}
+/* ---------- phones: app layout ---------- */
+@media (max-width:760px){
+  .ver{display:none}
+  header.top{padding-bottom:10px}
+  .brand h1{font-size:14px}
+  .horizon{margin-top:0}
+  .iconbtn .kbd{display:none}
+  .iconbtn,.help{width:34px;height:34px}
+  .status{padding:6px 10px;max-width:34vw}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;width:auto;display:grid;grid-template-columns:repeat(6,1fr);gap:0;
+    padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(20,14,8,.12)}
+  nav.tabs button{flex-direction:column;gap:3px;padding:7px 0 6px;border-radius:10px;font:600 10px/1 var(--sans);letter-spacing:.02em;text-transform:none}
+  nav.tabs .ti{width:21px;height:21px;opacity:1}
+  nav.tabs button[aria-selected="true"]{background:var(--spice-soft);color:var(--spice)}
+  nav.tabs .badge{display:inline-block;position:absolute;top:2px;left:calc(50% + 6px);margin:0;min-width:16px;padding:2px 4px;font-size:9.5px;background:var(--spice);color:var(--on-spice)}
+  nav.tabs button[aria-selected="true"] .badge{background:var(--spice);color:var(--on-spice)}
+  nav.tabs .badge:empty,nav.tabs .badge[data-zero]{display:none}
+  .newdot{top:3px;right:calc(50% - 16px)}
+  main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+  .filterbtn{display:inline-flex}
+  .filters{display:none}
+  .filters.open{display:block}
+  .chip{padding:7px 12px}
+  .searchdlg{margin-top:2vh}
+}
+
+.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--spice)}100%{box-shadow:0 0 0 0 transparent}}
+.mineb{background:var(--spice)!important;color:var(--on-spice)!important}
+
+/* house picker */
+.pick{margin-bottom:16px}
+.tablewrap{overflow-x:auto;margin-top:6px}
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+.cmp th,.cmp td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+.cmp thead th{font:700 13px/1.2 var(--display);letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--line)}
+.cmp thead th img{width:26px;height:26px;object-fit:contain;vertical-align:middle;margin-right:8px}
+.cmp thead th.atr{color:#3E7C4A;border-bottom-color:#3E7C4A}
+.cmp thead th.hark{color:#9A3A2A;border-bottom-color:#9A3A2A}
+.cmp tbody th{font-weight:600;color:var(--muted);width:22%}
+.cmp td{width:39%}
+.picknote{margin-bottom:12px}
+.picknote .lnk{background:none;border:0;padding:0;color:var(--ibad);font:inherit;font-weight:600;cursor:pointer;text-decoration:underline}
+
+.sdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--spice);margin-left:6px;vertical-align:middle}
+@media (max-width:1360px) and (min-width:761px){ .brand .ver{display:none} nav.tabs button{padding:8px 9px;letter-spacing:.05em} }
+@media (max-width:760px){
+  .col.second{order:2}
+  .brand h1{white-space:nowrap}
+}
+@media (max-width:420px){ #themeBtn{display:none} .brand h1{font-size:13px;letter-spacing:.06em} }
 </style>
 </head>
 <body>
@@ -503,14 +599,18 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
 <div class="app">
   <header class="top">
     <div class="brand"><h1>Arrakis for Idiots</h1><span class="ver" id="ver"></span></div>
-    <div class="hdr-r"><button class="status" id="status" data-state="solo"><i></i><span id="statusText">Solo</span></button><button class="help" id="helpBtn" aria-label="How to use" title="How to use">?</button></div>
+    <div class="hdr-r">
+      <button class="iconbtn" id="searchBtn" aria-label="Search everything" title="Search everything (press /)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="kbd">/</span></button>
+      <button class="status" id="status" data-state="connecting"><i></i><span id="statusText">Connecting…</span></button>
+      <button class="iconbtn" id="themeBtn" aria-label="Theme" title="Theme"></button>
+      <button class="help" id="helpBtn" aria-label="How to use" title="How to use">?</button></div>
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button role="tab" data-tab="craft" id="tab-craft">Craft</button>
-      <button role="tab" data-tab="gather" id="tab-gather">Gather</button>
-      <button role="tab" data-tab="list" id="tab-list">Mine<span class="badge num" id="listBadge">0</span></button>
-      <button role="tab" data-tab="group" id="tab-group">Group<span class="badge num" id="groupBadge">0</span></button>
-      <button role="tab" data-tab="spots" id="tab-spots">Spots</button>
-      <button role="tab" data-tab="survive" id="tab-survive">Guide</button>
+      <button role="tab" data-tab="craft" id="tab-craft"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5l5 5-2.5 2.5-5-5z M12 7l-8.5 8.5 3 3L15 10"/></svg><span class="tl">Craft</span></button>
+      <button role="tab" data-tab="gather" id="tab-gather"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l8.5-8.5 M13.5 3.5c3 0 6 2 7 5-2-1-5-1-7 1l-3-3c1-2 2-3 3-3z"/></svg><span class="tl">Gather</span></button>
+      <button role="tab" data-tab="list" id="tab-list"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11 M9 12h11 M9 18h11 M4.5 6h.01 M4.5 12h.01 M4.5 18h.01"/></svg><span class="tl">Mine</span><span class="badge num" id="listBadge">0</span></button>
+      <button role="tab" data-tab="group" id="tab-group"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20c0-3 3-5 6-5s6 2 6 5 M16.5 10.5a2.5 2.5 0 1 0 0-5 M18 14.5c2 .6 3 2.2 3 4.5"/></svg><span class="tl">Group</span><span class="badge num" id="groupBadge">0</span><span class="newdot" id="groupDot" hidden></span></button>
+      <button role="tab" data-tab="spots" id="tab-spots"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z M12 12.3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg><span class="tl">Spots</span></button>
+      <button role="tab" data-tab="survive" id="tab-survive"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z M4 20.5V5.5 M8.5 7.5h7"/></svg><span class="tl">Guide</span></button>
     </nav>
   </header>
   <div class="horizon" aria-hidden="true"></div>
@@ -518,13 +618,18 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
     <div class="view browse" id="browse">
       <div class="pane">
         <div class="seg" id="craftSeg" role="group" aria-label="Craft view"></div>
+        <div class="searchrow">
         <label class="search">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           <input id="q" type="search" placeholder="Search items, e.g. stillsuit, ingot, sandbike" autocomplete="off" aria-label="Search">
           <button id="qClear" aria-label="Clear search" hidden>✕</button>
         </label>
+        <button class="filterbtn" id="filterBtn" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16 M7 12h10 M10 18h4"/></svg>Filters<span class="fcount num" id="fCount" hidden>0</span></button>
+        </div>
+        <div class="filters" id="filters">
         <div class="chips" id="groupChips"></div>
         <div class="chips" id="tierChips"></div>
+        </div>
         <div class="count" id="count"></div>
         <div class="list" id="results" role="list"></div>
       </div>
@@ -571,6 +676,11 @@ ul.plain.notes li{display:list-item;list-style:disc;margin-left:18px;color:var(-
     <p class="err" id="crewErr" hidden></p>
     <div class="toolbar"><button class="btn" type="submit">Add</button><button class="btn ghost" type="button" id="crewCancel">Cancel</button></div>
   </form>
+</dialog>
+<dialog id="searchDlg" class="wide searchdlg" aria-label="Search everything">
+  <label class="search big"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <input id="sAll" type="search" placeholder="Search recipes, materials, the guide, spots and tasks" autocomplete="off" aria-label="Search everything"><button class="x" id="sClose" type="button" aria-label="Close">×</button></label>
+  <div id="sResults" class="sresults" role="listbox" aria-label="Results"></div>
 </dialog>
 <datalist id="allNames"></datalist><datalist id="rawNames"></datalist><datalist id="regionNames"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
@@ -738,6 +848,7 @@ function chip(label, pressed, attrs = "", sw = "") {
   return `<button class="chip" aria-pressed="${pressed}" ${attrs}>${sw ? `<span class="sw" style="background:${sw}"></span>` : ""}${esc(label)}</button>`;
 }
 function renderChips() {
+  setTimeout(syncFilterBtn, 0);
   if (S.tab === "craft") {
     const extra = (S.fav.length ? chip("★ Saved", S.group === "__fav", `data-g="__fav"`) : "") + (S.recent.length ? chip("Recent", S.group === "__recent", `data-g="__recent"`) : "");
     if ((S.group === "__fav" && !S.fav.length) || (S.group === "__recent" && !S.recent.length)) S.group = "All";
@@ -1143,8 +1254,9 @@ $("crewForm").addEventListener("submit", async e => {
 
 let taskKind = "gather", showDone = {};
 function taskRowHTML(t) {
+  const isNew = !t.done && t.by !== G.uid && t.at > SEEN.tasks && canon(t.who) === myKey();
   const sub = [t.note ? esc(t.note) : "", dueHTML(t.due), t.by !== G.uid && G.members[t.by] ? `from ${esc(nameOf(t.by))}` : ""].filter(Boolean).join(" · ");
-  return `<div class="task ${t.done ? "done" : ""}">
+  return `<div class="task ${t.done ? "done" : ""} ${isNew ? "new" : ""}">
     <input type="checkbox" id="t_${t.id}" data-tdone="${t.id}" ${t.done ? "checked" : ""} ${isStaff() || t.who === "m:" + G.uid ? "" : "disabled title=\"Only the leader, officers or the person it's for can tick this\""} aria-label="Done: ${esc(taskLabel(t))}">
     ${t.n && (ITEMS.has(t.n) || RAWS.has(t.n)) ? iconHTML(t.n, 26) : `<span class="ic gl" style="--s:26px;--tc:var(--muted)">${svgGlyph(t.kind === "job" ? "spice" : "box")}</span>`}
     <label for="t_${t.id}" class="nm"><span class="t">${esc(taskLabel(t))}</span>${sub ? `<small>${sub}</small>` : ""}</label>
@@ -1162,11 +1274,11 @@ function renderTasks(V) {
   const people = [...crew];
   if (G.tasks.some(t => !keys.has(canon(t.who)))) people.push({ key: "__none", name: "Unassigned or removed", app: false, none: true });
   const tasksOf = p => G.tasks.filter(t => p.none ? !keys.has(canon(t.who)) : canon(t.who) === p.key);
-  people.sort((a, b) => tasksOf(b).filter(t => !t.done).length - tasksOf(a).filter(t => !t.done).length);
+  people.sort((a, b) => (b.key === myKey()) - (a.key === myKey()) || tasksOf(b).filter(t => !t.done).length - tasksOf(a).filter(t => !t.done).length);
   const openTotal = G.tasks.filter(t => !t.done).length;
   const defWho = S.lastWho && keys.has(S.lastWho) ? S.lastWho : (crew[0] ? crew[0].key : "");
   V.innerHTML = `${groupSeg("tasks")}
-  <div class="col">
+  <div class="col ${isStaff() ? "" : "second"}">
     ${isStaff() ? "" : `<div class="card"><h2>Tasks</h2><p class="lede">The leader and officers hand out tasks here. Tick yours off when you're done; you'll find them under your name on the board.</p>${staffNote("assign or delete tasks")}</div>`}
     <div class="card" ${isStaff() ? "" : "hidden"}>
       <h2>Give someone a task</h2>
@@ -1208,7 +1320,7 @@ function renderTasks(V) {
       if (!ts.length && !p.app) return `<div class="card person empty"><div class="cardhd"><h3 class="pname">${crewDot(p.key)}${esc(p.name)}</h3><span class="muted">no tasks</span></div></div>`;
       if (!ts.length) return "";
       return `<div class="card person">
-        <div class="cardhd"><h3 class="pname">${p.none ? "" : crewDot(p.key)}${esc(p.name)} <span class="muted">${open.length} open</span></h3>
+        <div class="cardhd"><h3 class="pname">${p.none ? "" : crewDot(p.key)}${esc(p.name)}${p.key === myKey() ? `<span class="mine-tag">You</span>` : ""} <span class="muted">${open.length} open</span></h3>
           ${open.length && !p.none ? `<button class="btn ghost small" data-tcopy="${esc(p.key)}">Copy list</button>` : ""}</div>
         ${open.map(taskRowHTML).join("") || `<p class="empty" style="padding:6px 0">All done.</p>`}
         ${done.length ? `<button class="lnk showdone" data-showdone="${esc(p.key)}">${showDone[p.key] ? "Hide" : "Show"} ${done.length} done</button>${showDone[p.key] ? done.map(taskRowHTML).join("") + (isStaff() ? `<div class="toolbar"><button class="btn ghost small" data-cleardone="${esc(p.key)}">Clear done</button></div>` : "") : ""}` : ""}
@@ -1249,7 +1361,8 @@ function renderTasks(V) {
 }
 function groupSeg(active) {
   const open = G.tasks.filter(t => !t.done).length;
-  return `<div class="seg gseg" role="group" aria-label="Group view"><button data-gview="list" aria-pressed="${active === "list"}">List & gathering</button><button data-gview="tasks" aria-pressed="${active === "tasks"}">Tasks${open ? ` <span class="badge num">${open}</span>` : ""}</button></div>`;
+  const mine = myOpenTasks().length, fresh = newTasksForMe().length;
+  return `<div class="seg gseg" role="group" aria-label="Group view"><button data-gview="list" aria-pressed="${active === "list"}">List & gathering${newActivity().length && active !== "list" ? ` <span class="sdot" title="New activity"></span>` : ""}</button><button data-gview="tasks" aria-pressed="${active === "tasks"}">Tasks${mine ? ` <span class="badge num mineb" title="${mine} for you">${mine} yours</span>` : open ? ` <span class="badge num">${open}</span>` : ""}${fresh ? ` <span class="sdot" title="New task for you"></span>` : ""}</button></div>`;
 }
 function wireGroupSeg(V) { V.querySelectorAll("[data-gview]").forEach(b => b.onclick = () => { S.gview = b.dataset.gview; save(); renderGroup(); }); }
 
@@ -1282,9 +1395,28 @@ $("copyClose").onclick = () => $("copyDlg").close();
 
 /* ---------- my list ---------- */
 function updateBadge() {
-  $("listBadge").textContent = S.example ? 0 : S.list.length;
-  $("groupBadge").textContent = G.items.length;
-  $("groupBadge").hidden = G.state !== "live";
+  const lc = S.example ? 0 : S.list.length;
+  $("listBadge").textContent = lc; $("listBadge").toggleAttribute("data-zero", !lc);
+  const mine = G.state === "live" ? myOpenTasks().length : 0;
+  $("groupBadge").textContent = mine;
+  $("groupBadge").hidden = !mine;
+  $("groupBadge").title = mine ? `${mine} open task${mine === 1 ? "" : "s"} for you` : "";
+  $("groupDot").hidden = !(G.state === "live" && hasNewForMe());
+}
+/* ---------- new-for-you ---------- */
+let SEEN = { group: 0, tasks: 0 };
+try { SEEN = { ...SEEN, ...JSON.parse(localStorage.getItem(KEY + "-seen") || "{}") }; } catch (e) {}
+const myKey = () => "m:" + G.uid;
+const myOpenTasks = () => G.tasks.filter(t => !t.done && canon(t.who) === myKey());
+const newActivity = () => G.log.filter(x => x.by !== G.uid && x.at > SEEN.group);
+const newTasksForMe = () => myOpenTasks().filter(t => t.by !== G.uid && t.at > SEEN.tasks);
+const hasNewForMe = () => newActivity().length > 0 || newTasksForMe().length > 0;
+function markSeen(which) {
+  if (G.state !== "live" || !G.log) return;
+  const t = Date.now();
+  if (which === "group") SEEN.group = t; else SEEN.tasks = t;
+  try { localStorage.setItem(KEY + "-seen", JSON.stringify(SEEN)); } catch (e) {}
+  $("groupDot").hidden = !hasNewForMe();
 }
 function renderList() {
   const V = $("mylist");
@@ -1323,6 +1455,7 @@ function renderList() {
 
 /* ---------- group ---------- */
 function groupGate(V, what) {
+  if (G.state === "connecting") { V.innerHTML = `<div class="card" style="max-width:560px"><h2>Connecting…</h2><p class="lede">Reaching the group. This takes a second.</p></div>`; return true; }
   if (G.state === "solo" || (G.state === "offline" && !G.me)) {
     V.innerHTML = `<div class="card setup" style="max-width:640px">
       <h2>${G.state === "solo" ? "Group sync isn't set up" : "Can't reach the group"}</h2>
@@ -1355,7 +1488,8 @@ const LOG_TEXT = {
 function renderGroup() {
   const V = $("grouplist");
   if (groupGate(V, "the group list")) return;
-  if (S.gview === "tasks") return renderTasks(V);
+  if (S.gview === "tasks") { renderTasks(V); setTimeout(() => markSeen("tasks"), 1500); return; }
+  const seenBefore = SEEN.group; setTimeout(() => markSeen("group"), 1500);
   const entries = G.items.map(x => [x.n, x.q]);
   const stock = Object.fromEntries(Object.entries(G.stock).map(([n, s]) => [n, s.q]));
   const gross = rollup(entries).raw;
@@ -1410,7 +1544,7 @@ function renderGroup() {
     </div>
     <div class="card">
       <h2>Recent activity</h2>
-      ${G.log.length ? `<ul class="feed">${G.log.slice(0, 15).map(x => `<li>${dot(x.by, nameOf(x.by))}<span><b>${esc(nameOf(x.by))}</b> ${esc((LOG_TEXT[x.k] || (() => ""))(x))}</span><time>${timeAgo(x.at)}</time></li>`).join("")}</ul>` : `<p class="lede">Nothing yet. Adds, ticks, claims, storage and new spots show up here.</p>`}
+      ${G.log.length ? `<ul class="feed">${G.log.slice(0, 15).map(x => `<li class="${x.by !== G.uid && x.at > seenBefore ? "new" : ""}">${dot(x.by, nameOf(x.by))}<span><b>${esc(nameOf(x.by))}</b> ${esc((LOG_TEXT[x.k] || (() => ""))(x))}</span><time>${timeAgo(x.at)}</time></li>`).join("")}</ul>` : `<p class="lede">Nothing yet. Adds, ticks, claims, storage and new spots show up here.</p>`}
     </div>
   </div>`;
   const run = p => p.catch(e => toast(errText(e)));
@@ -1635,7 +1769,7 @@ async function openSpot(id) {
 }
 
 /* ---------- group sync (Firebase) ---------- */
-const G = { state: "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [], roles: {} };
+const G = { state: (CONFIG.FIREBASE.apiKey && CONFIG.FIREBASE.projectId) ? "connecting" : "solo", uid: null, me: null, members: {}, items: [], got: {}, players: {}, stock: {}, claims: {}, log: [], spots: [], crew: [], tasks: [], roles: {} };
 /* roles: the leader (whoever entered the leader code) and officers they pick. Everyone else is a member. */
 const roleOf = uid => (G.roles[uid] && G.roles[uid].role) || "member";
 const isStaff = (uid = G.uid) => ["leader", "officer"].includes(roleOf(uid));
@@ -1650,8 +1784,9 @@ function setStatus(state) {
   G.state = state;
   const el = $("status");
   el.dataset.state = state;
-  $("statusText").textContent = { solo: "Solo", join: "Join group", live: G.me ? G.me.name : "Group", offline: "Offline" }[state];
-  el.title = { solo: "Group sync isn't set up on this copy", join: "Join your server's group", live: "Connected to the group · tap to change your name", offline: "Can't reach the group right now" }[state];
+  $("statusText").textContent = { solo: "Solo", connecting: "Connecting…", join: "Join group", live: G.me ? G.me.name : "Group", offline: "Offline" }[state];
+  el.title = { solo: "Group sync isn't set up on this copy", connecting: "Connecting to the group", join: "Join your server's group", live: "Connected to the group · tap for your player and account", offline: "Can't reach the group right now" }[state];
+  netStatus();
   rerender();
 }
 let rrT;
@@ -1858,6 +1993,8 @@ function initGroup() {
   try {
     const app = firebase.initializeApp(cfg);
     fb = { auth: firebase.auth(app), db: firebase.firestore(app) };
+    /* keep a local copy so the group view opens instantly and edits made offline sync later */
+    try { if (fb.db.enablePersistence) fb.db.enablePersistence({ synchronizeTabs: true }).catch(() => {}); } catch (e) {}
     if (CONFIG.EMULATOR) { fb.db.useEmulator(CONFIG.EMULATOR.host, CONFIG.EMULATOR.port); }
     fb.board = fb.db.collection("boards").doc(CONFIG.GROUP_ID || "main");
   } catch (e) { return setStatus("offline"); }
@@ -2056,7 +2193,34 @@ function housesHTML() {
     </section>`;
   };
   const people = Object.entries(H.people || {});
-  return `<div class="callout">Atreides or Harkonnen? Almost everything a House sells is <b>cosmetic</b>: new looks for armor, weapons, vehicles and buildings that you apply to gear you already own. The <b>gameplay</b> items are Scout Ornithopter Mk4 parts and one schematic per House. Pick a House for the look, the story and your friends, not for stats. (“House” is also a weapon quality tier, like House Karpov 38. That has nothing to do with your faction.)</div>
+  const cnt = hn => { const it = H.houses[hn].items; return { armor: it.filter(i => i.type === "Armor").length, weapon: it.filter(i => i.type === "Weapon" && i.cosmetic).length, vehicle: it.filter(i => i.type === "Vehicle" && i.cosmetic).length, building: it.filter(i => i.type === "Building").length }; };
+  const ca = cnt("Atreides"), ch = cnt("Harkonnen");
+  const row = (label, a, h) => `<tr><th scope="row">${label}</th><td>${a}</td><td>${h}</td></tr>`;
+  const pickHTML = `<div class="card pick">
+    <h2>Which House should we pick?</h2>
+    <p class="lede">Neither side gets stronger armor or weapons. The differences are where you're based, one schematic each, and the look. Pick together, since a guild can only hold one House.</p>
+    <div class="tablewrap"><table class="cmp">
+      <thead><tr><th></th><th class="atr">${G2.houses.houses.Atreides.crest ? wikiPic(G2.houses.houses.Atreides.crest, 64, "", "") : ""}Atreides</th><th class="hark">${G2.houses.houses.Harkonnen.crest ? wikiPic(G2.houses.houses.Harkonnen.crest, 64, "", "") : ""}Harkonnen</th></tr></thead>
+      <tbody>
+        ${row("Where you pledge", "Arrakeen · Thufir Hawat (Residency Approach)", "Harko Village · Piter de Vries (Spire Keep)")}
+        ${row("Home vendors", "Atreides Quartermaster and Steward", "Harkonnen Acquisitor, Quartermaster and Supply Clerk")}
+        ${row("Unique schematic", "<b>Focused Buggy Cutteray Mk5</b>: a buggy mining laser with a better yield. 125,000 Solari. Good if your group mines with buggies.", "<b>Shaitan's Tongue</b>: a fire weapon, about 25.8 fire damage per shot, 230 rounds a minute, 60-round clip, 15 m range. 75,000 Solari. Good for close-range fights.")}
+        ${row("Can the other side get it?", "Yes: it also drops from Deep Desert wrecks and sells on the Exchange.", "Yes: same, from wrecks and the Exchange.")}
+        ${row("Scout Ornithopter Mk4 parts", "Yes, at rank Agent (4)", "Yes, at rank Agent (4), same prices")}
+        ${row("Look (cosmetic variants)", `${ca.armor} armor · ${ca.weapon} weapon · ${ca.vehicle} vehicle · ${ca.building} building sets. Top rank line: <b>Envoy</b>`, `${ch.armor} armor · ${ch.weapon} weapon · ${ch.vehicle} vehicle · ${ch.building} building sets. Top rank line: <b>Enforcer</b>`)}
+        ${row("The other side's looks", "Phin O'Garee in Arrakeen sells Harkonnen cosmetics to you at double price", "Ormuna Laaks in Harko Village sells Atreides cosmetics to you at double price")}
+        ${row("Film armor (paid DLC)", "Atreides Hoplite Armor, Caladan Stormcoat", "Harkonnen Cataphract Armor")}
+      </tbody></table></div>
+    <div class="grp" style="margin-top:14px">How to decide</div>
+    <ul class="gbul">
+      <li><b>Decide as a group.</b> A guild aligned with one House removes members of the other.</li>
+      <li><b>Pick the city you'll hang out in.</b> Arrakeen for Atreides, Harko Village for Harkonnen. Both have taxis, vendors and trainers.</li>
+      <li><b>Mining with buggies?</b> Atreides' schematic helps. <b>Want a close-range fire gun?</b> Harkonnen's. Either side can still find both in the Deep Desert.</li>
+      <li><b>Otherwise, pick the look and the story you like.</b> Stats don't change.</li>
+      <li><b>You can switch only once, and never back.</b> ${esc(G2.houses.switching.split(". ").slice(1, 3).join(". "))}.</li>
+    </ul>
+  </div>`;
+  return pickHTML + `<div class="callout">Atreides or Harkonnen? Almost everything a House sells is <b>cosmetic</b>: new looks for armor, weapons, vehicles and buildings that you apply to gear you already own. The <b>gameplay</b> items are Scout Ornithopter Mk4 parts and one schematic per House. Pick a House for the look, the story and your friends, not for stats. (“House” is also a weapon quality tier, like House Karpov 38. That has nothing to do with your faction.)</div>
     <div class="chips" style="margin:12px 0">${[["all", "Everything"], ["gameplay", "Gameplay only"], ...HOUSE_TYPES.slice(0, 4).map(t => [t, t])].map(([k, l]) => chip(l, houseFilter === k, `data-hf="${esc(k)}"`)).join("")}</div>
     <div class="houses">${Object.entries(H.houses).map(([hn, hv]) => col(hn, hv, hn.toLowerCase())).join("")}</div>
     ${people.length ? `<div class="grp" style="margin-top:18px">People you'll deal with</div><div class="people">${people.map(([n, im]) => `<figure>${wikiPic(im, 160, "", n)}<figcaption>${esc(n)}</figcaption></figure>`).join("")}</div>` : ""}
@@ -2133,7 +2297,7 @@ function renderSurvive() {
   } else {
     const sec = GUIDE_SECTIONS.find(x => x.id === guideSec) || GUIDE_SECTIONS[0];
     body = `<h2 class="sec-h">${esc(sec.title)}</h2>${sec.intro ? `<p class="intro">${esc(sec.intro)}</p>` : ""}` +
-      (sec.id === "start" ? `<div>${startCards().map(stageHTML).join("")}</div>` : sec.id === "houses" ? housesHTML() : `<div class="gcards">${cardsOf(sec.id).map(c => gcardHTML(c)).join("")}</div>`);
+      (sec.id === "start" ? `${G2.houses ? `<div class="callout picknote">Before anyone pledges to a House, read <button class="lnk" data-gjump="houses">Which House should we pick?</button>. You can only switch once.</div>` : ""}<div>${startCards().map(stageHTML).join("")}</div>` : sec.id === "houses" ? housesHTML() : `<div class="gcards">${cardsOf(sec.id).map(c => gcardHTML(c)).join("")}</div>`);
   }
   V.innerHTML = `<div class="guidev">
     <nav class="gnav" aria-label="Guide sections">
@@ -2146,6 +2310,7 @@ function renderSurvive() {
     </div></div>`;
   V.querySelectorAll("[data-gsec]").forEach(b => b.onclick = () => { guideSec = b.dataset.gsec; guideQ = ""; renderSurvive(); V.scrollTop = 0; if (window.innerWidth <= 760) V.querySelector(".gbody").scrollIntoView(); });
   V.querySelectorAll("[data-go2]").forEach(b => b.onclick = () => go(b.dataset.go2));
+  V.querySelectorAll("[data-gjump]").forEach(b => b.onclick = () => { guideSec = b.dataset.gjump; guideQ = ""; renderSurvive(); V.scrollTop = 0; window.scrollTo(0, 0); });
   V.querySelectorAll("[data-hf]").forEach(b => b.onclick = () => { houseFilter = b.dataset.hf; renderSurvive(); });
   const cur = V.querySelector('[data-gsec][aria-current="true"]');
   if (cur && window.innerWidth <= 760) { const row = cur.parentNode; row.scrollLeft = cur.offsetLeft - (row.clientWidth - cur.offsetWidth) / 2; }
@@ -2293,6 +2458,8 @@ function guideHTML() {
   <p class="lede">The stripe and icon color show an item's tier.</p>
   <div class="legend">${legend}</div>
   <p class="lede" style="margin-top:12px">“Check in game” means the numbers came from one source or sources that disagree. Pictures come from awakening.wiki; <i>View on wiki</i> on any item opens its full page.</p>
+  <h3 class="sub">Theme</h3>
+  <div class="seg" role="group" aria-label="Theme">${THEMES.map(th => `<button type="button" data-themepick="${th}" aria-pressed="${THEME === th}">${{ system: "Match device", light: "Light", dark: "Dark" }[th]}</button>`).join("")}</div>
   <h3 class="sub">On your phone</h3>
   <p class="lede">Add this page to your home screen and it opens like an app. iPhone: Safari → Share → Add to Home Screen. Android: Chrome menu → Add to Home screen.</p>
   <div class="toolbar"><button class="btn" id="guideOk">Got it</button></div>`;
@@ -2302,6 +2469,7 @@ function openGuide() {
   d.innerHTML = guideHTML();
   const close = () => d.close();
   $("guideX").onclick = close; $("guideOk").onclick = close;
+  d.querySelectorAll("[data-themepick]").forEach(b => b.onclick = () => { THEME = b.dataset.themepick; try { localStorage.setItem(KEY + "-theme", THEME); } catch (e) {} applyTheme(); d.querySelectorAll("[data-themepick]").forEach(x => x.setAttribute("aria-pressed", x.dataset.themepick === THEME)); });
   d.showModal();
   try { localStorage.setItem(KEY + "-guide", String(GUIDE_VERSION)); } catch (e) {}
 }
@@ -2312,6 +2480,130 @@ $("helpBtn").onclick = openGuide;
 $("allNames").innerHTML = [...ITEMS.keys(), ...RAWS.keys()].sort().map(n => `<option value="${esc(n)}"></option>`).join("");
 $("rawNames").innerHTML = [...RAWS.keys()].sort().map(n => `<option value="${esc(n)}"></option>`).join("");
 $("regionNames").innerHTML = REGIONS.map(n => `<option value="${esc(n)}"></option>`).join("");
+
+
+/* ---------- theme: system / light / dark ---------- */
+const THEMES = ["system", "light", "dark"];
+const THEME_ICON = {
+  system: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>`,
+  light: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`,
+  dark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
+};
+let THEME = "system"; try { THEME = localStorage.getItem(KEY + "-theme") || "system"; } catch (e) {}
+function applyTheme() {
+  if (THEME === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", THEME);
+  const label = { system: "Theme: match my device", light: "Theme: light", dark: "Theme: dark" }[THEME];
+  $("themeBtn").innerHTML = THEME_ICON[THEME]; $("themeBtn").title = label + " (tap to change)"; $("themeBtn").setAttribute("aria-label", label);
+  const dark = THEME === "dark" || (THEME === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = dark ? "#1F1914" : "#F2E9DA";
+}
+$("themeBtn").onclick = () => {
+  THEME = THEMES[(THEMES.indexOf(THEME) + 1) % 3];
+  try { localStorage.setItem(KEY + "-theme", THEME); } catch (e) {}
+  applyTheme(); toast({ system: "Theme matches your device", light: "Light theme", dark: "Dark theme" }[THEME]);
+};
+try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme); } catch (e) {}
+applyTheme();
+
+/* ---------- Filters button (phones) ---------- */
+function filterCount() { return S.tab === "craft" ? (S.group !== "All") + (S.tier !== "All") : (S.bucket !== "All") + 0; }
+function syncFilterBtn() {
+  const n = filterCount(), c = $("fCount");
+  c.textContent = n; c.hidden = !n;
+}
+$("filterBtn").onclick = () => {
+  const open = !$("filters").classList.contains("open");
+  $("filters").classList.toggle("open", open); $("filterBtn").setAttribute("aria-expanded", open);
+};
+
+/* ---------- search everything ---------- */
+const SG = {
+  guide: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z M4 20.5V5.5"/></svg>`,
+  spot: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/></svg>`,
+  task: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>`,
+};
+let searchSel = 0, searchHits = [];
+function scoreName(name, q) {
+  const s = name.toLowerCase(), qq = q.toLowerCase().trim();
+  if (s === qq) return 0; if (s.startsWith(qq)) return 1; if (s.split(/\s+/).some(w => w.startsWith(qq))) return 2; return 3;
+}
+function searchAll(q) {
+  const out = [];
+  if (!q.trim()) return out;
+  const items = DATA.items.filter(i => matches(i.n, q)).sort((a, b) => scoreName(a.n, q) - scoreName(b.n, q) || a.n.length - b.n.length).slice(0, 8);
+  items.forEach(i => out.push({ grp: "Recipes", kind: "item", key: i.n, title: i.n, sub: `${i.g}${i.t != null ? " · " + TIER_NAME[i.t] : ""}`, icon: iconHTML(i.n, 28) }));
+  DATA.raws.filter(r => matches(r.n, q)).sort((a, b) => scoreName(a.n, q) - scoreName(b.n, q)).slice(0, 6)
+    .forEach(r => out.push({ grp: "Materials", kind: "raw", key: r.n, title: r.n, sub: r.l || r.o || r.b, icon: iconHTML(r.n, 28) }));
+  const gh = [];
+  for (const sec of GUIDE_SECTIONS) for (const c of cardsOf(sec.id)) {
+    const text = [c.title, c.summary, c.tip, ...(c.bullets || []), ...(c.items || [])].join(" ");
+    if (matches(text, q)) gh.push({ grp: "Guide", kind: "guide", key: c.title, sec: sec.id, title: c.title.replace(/^\d+\.\s*/, ""), sub: sec.title, icon: `<span class="sg">${SG.guide}</span>`, s: matches(c.title, q) ? 0 : 1 });
+  }
+  gh.sort((a, b) => a.s - b.s).slice(0, 6).forEach(x => out.push(x));
+  if (G.state === "live") {
+    G.spots.filter(sp => matches([sp.title, sp.n, sp.region, sp.note].join(" "), q)).slice(0, 5)
+      .forEach(sp => out.push({ grp: "Spots", kind: "spot", key: sp.id, title: sp.title, sub: [sp.kind, sp.n, sp.region].filter(Boolean).join(" · "), icon: `<span class="sg">${SG.spot}</span>` }));
+    G.tasks.filter(t => !t.done && matches(taskLabel(t) + " " + crewName(t.who) + " " + (t.note || ""), q)).slice(0, 5)
+      .forEach(t => out.push({ grp: "Tasks", kind: "task", key: t.id, title: taskLabel(t), sub: crewName(t.who) + (t.due ? " · " + dueHTML(t.due).replace(/<[^>]+>/g, "") : ""), icon: `<span class="sg">${SG.task}</span>` }));
+  }
+  return out;
+}
+function renderSearch() {
+  const q = $("sAll").value;
+  searchHits = searchAll(q);
+  searchSel = Math.min(searchSel, Math.max(0, searchHits.length - 1));
+  const R = $("sResults");
+  if (!q.trim()) { R.innerHTML = `<p class="shint">Type to search recipes, materials, the Guide${G.state === "live" ? ", spots and tasks" : ""}. Press Enter to open the top result, ↑ ↓ to move, Esc to close.</p>`; return; }
+  if (!searchHits.length) { R.innerHTML = `<p class="shint">Nothing matches “${esc(q)}”.</p>`; return; }
+  let last = "";
+  R.innerHTML = searchHits.map((h, i) => {
+    const head = h.grp !== last ? `<div class="sgrp">${esc(h.grp)}</div>` : ""; last = h.grp;
+    return head + `<button class="sres" role="option" data-si="${i}" aria-selected="${i === searchSel}">${h.icon}<span>${esc(h.title)}<small>${esc(h.sub || "")}</small></span><span class="tag">${esc(h.kind === "item" ? "recipe" : h.kind === "raw" ? "material" : h.kind)}</span></button>`;
+  }).join("");
+  R.querySelectorAll("[data-si]").forEach(b => b.onclick = () => openHit(searchHits[+b.dataset.si]));
+  const cur = R.querySelector('[aria-selected="true"]'); if (cur) cur.scrollIntoView({ block: "nearest" });
+}
+function openHit(h) {
+  if (!h) return;
+  $("searchDlg").close();
+  if (h.kind === "item" || h.kind === "raw") select(h.key);
+  else if (h.kind === "guide") { guideSec = h.sec; guideQ = ""; setTab("survive"); setTimeout(() => { const el = [...document.querySelectorAll("#survive .gcard h3, #survive .stage h3")].find(x => x.textContent.trim().replace(/^\d+\.\s*/, "") === h.title); if (el) { el.scrollIntoView({ block: "center" }); el.closest(".gcard, .stage").classList.add("flash"); } }, 80); }
+  else if (h.kind === "spot") { setTab("spots"); openSpot(h.key); }
+  else if (h.kind === "task") { S.gview = "tasks"; save(); setTab("group"); }
+}
+function openSearch() {
+  const d = $("searchDlg");
+  if (d.open) return;
+  $("sAll").value = ""; searchSel = 0; renderSearch();
+  d.showModal(); setTimeout(() => $("sAll").focus(), 20);
+}
+$("searchBtn").onclick = openSearch;
+$("sClose").onclick = () => $("searchDlg").close();
+$("sAll").addEventListener("input", () => { searchSel = 0; renderSearch(); });
+$("sAll").addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") { e.preventDefault(); searchSel = Math.min(searchSel + 1, searchHits.length - 1); renderSearch(); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); searchSel = Math.max(searchSel - 1, 0); renderSearch(); }
+  else if (e.key === "Enter") { e.preventDefault(); openHit(searchHits[searchSel]); }
+});
+$("searchDlg").addEventListener("click", e => { if (e.target === $("searchDlg")) $("searchDlg").close(); });
+document.addEventListener("keydown", e => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || "") || (document.activeElement && document.activeElement.isContentEditable);
+  if ((e.key === "/" && !typing) || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) { e.preventDefault(); openSearch(); }
+});
+
+/* ---------- offline ---------- */
+function netStatus() {
+  const off = !navigator.onLine;
+  document.documentElement.classList.toggle("is-offline", off);
+  const el = $("status");
+  if (off && (G.state === "live" || G.state === "join")) { el.dataset.state = "offline-cached"; el.title = "Offline. Recipes, the Guide and your lists still work; group changes sync when you're back online."; if (G.state === "live") $("statusText").textContent = (G.me ? G.me.name : "Group") + " · offline"; }
+  else if (!off && el.dataset.state === "offline-cached") { el.dataset.state = G.state; $("statusText").textContent = G.state === "live" ? (G.me ? G.me.name : "Group") : "Join group"; }
+}
+window.addEventListener("offline", () => { netStatus(); toast("You're offline. Everything still works here; group changes sync when you're back."); });
+window.addEventListener("online", () => { netStatus(); toast("Back online."); });
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  try { navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (e) {}
+}
 
 /* ---------- boot ---------- */
 $("ver").textContent = DATA.version;

@@ -14,6 +14,12 @@ Recipe data is for **Update 1.5** (game version 1.5.3.3).
 
 - **506 recipes**: materials and refining, weapons, tools, armor, stillsuits, consumables and ammo, base stations, refineries, power, water and building pieces, and **20 vehicles broken down into all 135 of their parts** (Sandbike, Buggy, Treadwheel, Scout / Assault / Carrier Ornithopter, Sandcrawler).
 - **Guide pictures**: location screenshots, enemies, trainers and quest art on most Guide cards, plus House crests, vendor portraits and gear icons, all loaded from awakening.wiki.
+- **Search everything**: the magnifier at the top (or press **/**, or Ctrl+K) searches recipes, materials, Guide cards, spots and tasks at once. Enter opens the top result.
+- **Built for phones**: on a phone the tabs move to a bottom bar with icons and counts, filters fold into one **Filters** button, and the header stays on one line.
+- **New for you**: a dot on Group when someone assigns you a task or there's new activity since you last looked, a count of your open tasks, your own tasks listed first and marked new.
+- **Works offline**: recipes, the Guide, your lists and item pictures you've seen keep working without signal. Group changes made offline sync when you're back. The status shows "· offline" meanwhile.
+- **Light, dark or match your device**: the half-circle button at the top (on small phones, it's in the **?** menu).
+- **Which House should we pick?**: a side-by-side Atreides vs Harkonnen comparison at the top of the Houses guide. It covers where you pledge, the one gameplay schematic each side gets, what the other side can still get, the looks, and the switching rules.
 - **Item pictures**: real in-game icons for 558 of the 562 items, shown straight from [awakening.wiki](https://awakening.wiki). If one doesn't load, a drawn icon in the tier color takes its place. **View on wiki** on any item opens its full page.
 - **Search and filter** by category and tier: Salvaged → Copper → Iron → Steel → Aluminum → Duraluminum → Plastanium. Each tier has its own color.
 - **Full breakdown**: set how many you want and it rolls every sub-part down to raw materials, lists what to craft first and at which station, and shows everything the item is used in.
@@ -252,8 +258,8 @@ const CONFIG = {
 ### 7. Deploy
 Any static host works.
 
-- **GitHub Pages:** create a **public** repo, upload `index.html` (and this README), then **Settings → Pages → Deploy from a branch → `main` / root → Save**. The site goes live at `https://<username>.github.io/<repo>/` in a minute or two.
-- **Netlify:** drag `index.html` onto [app.netlify.com/drop](https://app.netlify.com/drop).
+- **GitHub Pages:** create a **public** repo, upload `index.html` **and `sw.js`** (plus this README), then **Settings → Pages → Deploy from a branch → `main` / root → Save**. The site goes live at `https://<username>.github.io/<repo>/` in a minute or two.
+- **Netlify:** drag a folder containing `index.html` and `sw.js` onto [app.netlify.com/drop](https://app.netlify.com/drop).
 
 ### 7b. Make yourself leader
 Open the site and join. Tap your name at the top → **Run this group? Enter the leader code** → type your `leaderCode` → **Unlock**. Your role changes to Leader. Make friends officers from **Group → Tasks → Crew**.
@@ -297,7 +303,7 @@ Open the link. The pill at the top should say **Join group** and a join box pops
 
 **Upgrading?** Whenever the rules in step 5 change, paste them again and **Publish**, then replace `index.html`. The latest additions are sections for storage, claims, activity and spots, then tasks and the crew list. Nothing else changes and the existing group list carries over.
 
-Replace `index.html` in the repo (or drag the new one onto Netlify). Pages redeploys in about a minute at the same link. Nothing in the database needs to change.
+Replace `index.html` and `sw.js` in the repo (or drag the new folder onto Netlify). Pages redeploys in about a minute at the same link. Nothing in the database needs to change.
 
 When the game patches, the recipe data gets rebuilt into a new `index.html`. Firebase config values already pasted into the file carry over when it's rebuilt from the previous copy.
 
