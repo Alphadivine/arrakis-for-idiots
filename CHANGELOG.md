@@ -11,6 +11,14 @@ What changed in each update of Arrakis for Idiots, newest first.
   - The Salvaged tier filter was always empty; it's now **No tier** (starter gear and untiered base pieces).
   - The House comparison and House gear no longer run off the side of small phones.
 
+## 2026-10-02: Loadouts, gear stats and compare
+- **Loadouts** in the Guide: pick playstyle (Leveling & PvE or Gathering & survival), stage and school to get matching weapon and armor loadouts, with reasons, a confidence label and sources. 25 loadouts in all.
+- **Weapons & armor** Guide section: shields, damage types, light vs heavy armor, heat, each weapon type, and what each school carries.
+- **Stats** on every weapon (162), armor piece (192) and stillsuit piece (67), from dune.gaming.tools.
+- **Compare** up to three weapons or armor pieces side by side, with the best value highlighted.
+- Independently fact-checked before release: stat numbers matched the source, and the loadout and mechanics wording was corrected where it was wrong or out of date.
+- No Firebase rules change this time.
+
 ## 2026-09-28 (night): Map
 - **Map tab** (it replaces Spots) with three views:
   - **Our map:** the group's pins on Hagga Basin and the Deep Desert. Tap **+ Drop a pin** and tap the spot. Pins are colored by type, and Deep Desert pins get their grid square.
