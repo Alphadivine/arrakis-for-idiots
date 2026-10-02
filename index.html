@@ -2362,22 +2362,28 @@ async function releaseTaskClaim(t, skip) {
   if (c && c.for && canon(c.for) === canon(t.who) && !openGatherFor(t.who, t.n, skip || t.id)) await Group.claim(t.n, false).catch(() => {});
 }
 const LOADED = new Set(); let tidyT;
+/* reads tasks and claims straight from the server, so a browser showing its saved copy still cleans up */
 function tidyClaims() {
   clearTimeout(tidyT);
-  tidyT = setTimeout(() => {
-    if (!LOADED.has("groupTasks") || !LOADED.has("groupClaims") || G.state !== "live") return;
-    for (const c of Object.values(G.claims)) {
-      if (!c.for || openGatherFor(c.for, c.n)) continue;          // "I'm on it" for yourself, or still needed by a task
-      if (isStaff() || canon(c.for) === myKey()) Group.claim(c.n, false).catch(() => {});
-    }
-  }, 1500);
+  tidyT = setTimeout(async () => {
+    if (G.state !== "live" || !G.me) return;
+    try {
+      const [ts, cs] = await Promise.all([Group.col("groupTasks").get({ source: "server" }), Group.col("groupClaims").get({ source: "server" })]);
+      const open = []; ts.forEach(d => { const t = d.data(); if (!t.done && t.kind === "gather") open.push([canon(t.who), t.n]); });
+      cs.forEach(d => {
+        const c = d.data();
+        if (!c.for || open.some(([w, n]) => w === canon(c.for) && n === c.n)) return;   // "I'm on it" for yourself, or still needed by a task
+        if (isStaff() || canon(c.for) === myKey()) Group.col("groupClaims").doc(d.id).delete().catch(() => {});
+      });
+    } catch (e) { /* offline: try again next time */ }
+  }, 2500);
 }
 function stopGroup() { unsubs.forEach(u => u()); unsubs = []; }
 function startGroup() {
   stopGroup();
   const fail = () => setStatus("offline");
-  LOADED.clear();
-  const watch = (name, fn) => unsubs.push(fb.board.collection(name).onSnapshot(s => { fn(s); if (!(s.metadata && s.metadata.fromCache)) LOADED.add(name); if (name === "groupTasks" || name === "groupClaims") tidyClaims(); rerender(); }, fail));
+  LOADED.clear(); tidyClaims.ran = false;
+  const watch = (name, fn) => unsubs.push(fb.board.collection(name).onSnapshot(s => { fn(s); if (!(s.metadata && s.metadata.fromCache)) LOADED.add(name); if ((name === "groupTasks" || name === "groupClaims") && !tidyClaims.ran) { tidyClaims.ran = true; tidyClaims(); } rerender(); }, fail));
   watch("members", s => { G.members = {}; s.forEach(d => { G.members[d.id] = { name: d.data().name }; }); });
   watch("groupItems", s => {
     G.items = []; s.forEach(d => { const x = d.data(); G.items.push({ id: d.id, n: x.n, q: x.q, by: x.by, at: ms(x.at) }); });

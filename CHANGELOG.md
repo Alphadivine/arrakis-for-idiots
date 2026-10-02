@@ -11,6 +11,9 @@ What changed in each update of Arrakis for Idiots, newest first.
   - The Salvaged tier filter was always empty; it's now **No tier** (starter gear and untiered base pieces).
   - The House comparison and House gear no longer run off the side of small phones.
 
+## 2026-10-02 (later): Leftover-claim cleanup fix
+- **Fix:** the automatic cleanup of leftover "I'm on it" claims (from finished or deleted gathering tasks) now checks the server directly. Before, it could wait forever on a browser that was showing its saved copy, so an old claim like Armor Plating kept showing under "You're gathering".
+
 ## 2026-10-02: Loadouts, gear stats and compare
 - **Loadouts** in the Guide: pick playstyle (Leveling & PvE or Gathering & survival), stage and school to get matching weapon and armor loadouts, with reasons, a confidence label and sources. 25 loadouts in all.
 - **Weapons & armor** Guide section: shields, damage types, light vs heavy armor, heat, each weapon type, and what each school carries.
